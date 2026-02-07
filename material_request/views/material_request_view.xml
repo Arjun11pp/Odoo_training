@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="action_material_request" model="ir.actions.act_window">
+        <field name="name">Request</field>
+        <field name="res_model">material.request</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+
+    <record id="view_material_request_list" model="ir.ui.view">
+        <field name="name">material.request.list</field>
+        <field name="model">material.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="req_name"/>
+                <field name="employee_id"/>
+                <field name="date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_material_request_form" model="ir.ui.view">
+        <field name="name">material.request.form</field>
+        <field name="model">material.request</field>
+        <field name="arch" type="xml">
+            <form >
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight"
+                            invisible="state in [ 'draft','approved','rejected','head'] " groups="material_request.group_material_request_manager"/>
+                    <button name="action_head_approval" type="object" string="Approve" class="oe_highlight"
+                            invisible="state in [ 'draft','rejected','head','submitted'] " groups="material_request.group_material_request_head"/>
+                    <button name="action_send" type="object" string="Send" class="oe_highlight"
+                            invisible="state in [ 'approved','submitted','head','reject'] " groups="material_request.group_material_request_user"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state in ['head','draft','reject'] " groups="material_request.group_material_request_head"/>
+                    <field name="state" widget="statusbar"   statusbar_visible="submitted,approved,head"/>
+                </header>
+
+                <sheet>
+                 <div name="button_box" class="oe_button_box" invisible="state in [ 'draft','rejected','approved','submitted'] ">
+                     <button class="oe_stat_button" type="object" icon="fa-pencil-square-o"
+                              name="action_get_purchase_orders"   string="Count">
+                            <span style="white-space: pre;">Purchase Order</span>
+                        </button>
+                     <button class="oe_stat_button" type="object" icon="fa-pencil-square-o"
+                                 string="Count" name="action_get_internal_transfer"  >
+                            <span style="white-space: pre;">Internal Transfer</span>
+                        </button>
+                 </div>
+                    <group>
+                        <field name="req_name" readonly="state in ['head', 'approved']" />
+                        <field name="employee_id"/>
+                        <field name="date" readonly="state in ['head', 'approved']"/>
+                    </group>
+                    <notebook>
+                        <page string="materials">
+                            <field name="request_line_ids" readonly="state in ['head', 'approved']">
+<!--                            <field name="request_line_ids" readonly="state in ['head', 'approved']" >-->
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="request_type"/>
+                                    <field name="source_location_id" readonly="request_type == 'po' " required="request_type == 'internal'"/>
+                                    <field name="destination_location_id" readonly="request_type == 'po' " required="request_type == 'internal'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

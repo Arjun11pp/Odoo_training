@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_sale_order_form_inherit_button" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.custom.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_quotation_send']" position="after">
+                <button type="object" string="Create Project" name="action_create_projects"
+                        class="oe_highlight"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_sale_order_form_inherit_brand_field" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.custom.field</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_uom_qty']" position="after">
+                <field name="milestone"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_subscription_report_wizard" model="ir.actions.act_window">
+        <field name="name">Subscription Report</field>
+        <field name="res_model">subscription.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="recurring_subscription.model_subscription_report_wizard"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <record id="recurring_subscription_report_wizard_form" model="ir.ui.view">
+        <field name="name">subscription.report.wizard.form</field>
+        <field name="model">subscription.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="subscription_id" widget="many2many_tags"/>
+                    <field name="duration"/>
+                </group>
+                <footer>
+                    <button string="Print" name="action_subscription_report_button"
+                            type="object" class="btn-primary"/>
+                    <button string="cancel" name="action_subscription_report_button" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

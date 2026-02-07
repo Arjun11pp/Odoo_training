@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_subscription">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Subscription Report</h2>
+                    <br/>
+                    <t t-if="len(set([o.get('customer') for o in docs])) == 1">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-set="customer" t-value="o.get('customer')"/>
+                        </t>
+                        <strong>Customer</strong>
+                        <span t-esc="customer"/>
+                        <br/>
+                        <br/>
+                        <t t-if="len(set([o.get('appliedcredit') for o in docs])) == 1">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Name</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Product</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+
+                                <t t-foreach="docs" t-as="o">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('sequence_number')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('name')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('product').get('en_US')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('recurring_amount')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <t t-if="my_variable == 0">
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Terms and Conditions</strong>
+                                                    <span t-raw="o.get('terms_and_conditions')"/>
+                                                </t>
+                                                <t t-set="my_variable" t-value="5"/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </t>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Name</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Product</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Total Credit Applied else</strong>
+                                        </th>
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+
+                                <t t-foreach="docs" t-as="o">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('sequence_number')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('name')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('product').get('en_US')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('recurring_amount')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('appliedcredit')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <t t-if="my_variable == 0">
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Terms and Conditions</strong>
+                                                    <span t-raw="o.get('terms_and_conditions')"/>
+                                                </t>
+                                                <t t-set="my_variable" t-value="5"/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </t>
+                            </table>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <t t-if="len(set([o.get('appliedcredit') for o in docs])) == 1">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Name</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Customer</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Product</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+
+                                <t t-foreach="docs" t-as="o">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('sequence_number')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('name')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('customer')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('product').get('en_US')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('recurring_amount')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <t t-if="my_variable == 0">
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Terms and Conditions</strong>
+                                                    <span t-raw="o.get('terms_and_conditions')"/>
+                                                </t>
+                                                <t t-set="my_variable" t-value="5"/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </t>
+                            </table>
+                        </t>
+
+
+                        <t t-else="">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Name</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Product</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Total Credit Applied</strong>
+                                        </th>
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+
+                                <t t-foreach="docs" t-as="o">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('sequence_number')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('name')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('product').get('en_US')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('recurring_amount')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('appliedcredit')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <t t-if="my_variable == 0">
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <br/>
+                                                    <strong>Terms and Conditions</strong>
+                                                    <span t-raw="o.get('terms_and_conditions')"/>
+                                                </t>
+                                                <t t-set="my_variable" t-value="5"/>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </t>
+                            </table>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

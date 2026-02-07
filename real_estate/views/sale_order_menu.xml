@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+   <record id="create_order_action" model="ir.actions.act_window">
+       <field name="name">Create Order Menu</field>
+       <field name="res_model">sale.order</field>
+       <field name="view_mode">form</field>
+       <field name="target">new</field>
+   </record>
+   <menuitem id="create_order_menu" name="Create Order"
+             parent="sale.sale_menu_root" sequence="11" action="real_estate.create_order_action"/>
+</odoo>

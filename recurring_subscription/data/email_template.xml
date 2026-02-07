@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+   <data>
+       <record id="subscription_email_template" model="mail.template">
+           <field name="name">Subscription Email</field>
+           <field name="model_id" ref="recurring_subscription.model_recurring_subscription"/>
+           <field name="subject">Subscription state changed</field>
+           <field name="email_to">{{ object.customer_id.email}}</field>
+           <field name="description"> Subscription has been confirmed</field>
+           <field name="body_html" type="html">
+               <div style="margin: 10px; padding: 10px; background-color: lightblue;">
+                   <p>
+                       Hello,<span style="font-weight: bold;" t-out="object.customer_id.name"/>
+                       <br/>
+                       <br/>
+                       Your Subscription <span style="font-weight: bold;" t-out="object.sequence_number "></span> with amount  <span style="font-weight: bold;" t-out="object.recurring_amount "></span> has been confirmed!
+                       <br/>
+
+                       <br/>The due date is <span style="font-weight: bold;" t-out="object.due_date "></span>
+                       <br/>
+                       <br/>Mitchell Admin
+                       <br/>
+
+                   </p>
+               </div>
+           </field>
+       </record>
+   </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="product_id" model="product.product">
+            <field name="name">SubscriptionCredit</field>
+                <field name="default_code">SubscriptionCredit</field>
+            <field name="type">service</field>
+        </record>
+    </data>
+
+    <data>
+        <record id="product_id1" model="product.product">
+            <field name="name">Credit</field>
+                <field name="default_code">Credit</field>
+            <field name="type">service</field>
+        </record>
+    </data>
+</odoo>

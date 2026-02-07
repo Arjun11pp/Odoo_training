@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_subscription_credit">
+        <t t-call="web.html_container">
+
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Subscription Credit Report</h2>
+                    <br/>
+                    <t t-if="len(set([o.get('customer') for o in docs])) == 1">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-set="customer" t-value="o.get('customer')"/>
+                        </t>
+                        <strong>Customer</strong>
+                        <span t-esc="customer"/>
+                        <br/>
+                        <br/>
+                        <t t-if="len(set([o.get('applied') for o in docs])) == 1">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Subscription</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('id')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('subscriptionname')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('credit_amount')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Subscription</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Applied Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('id')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('subscriptionname')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('credit_amount')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('applied')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <t t-if="len(set([o.get('applied') for o in docs])) == 1">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Subscription</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Customer</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('id')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('subscriptionname')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('customer')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('credit_amount')"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-else="">
+                            <table class="o_mrp_bom_expandable table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <strong>SL.No</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Subscription</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>Applied Amount</strong>
+                                        </th>
+                                        <th>
+                                            <strong>State</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="o.get('id')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('subscriptionname')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('credit_amount')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('applied')"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.get('state').capitalize()"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
