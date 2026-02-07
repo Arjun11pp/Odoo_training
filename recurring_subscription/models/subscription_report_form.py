@@ -10,9 +10,9 @@ class SubscriptionReportForm(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data):
         query = """ SELECT rs.sequence_number , rs.name  ,res.name AS customer,temp.name AS product,rs.recurring_amount,rs.total_credit,rs.state ,rs.terms_and_conditions ,bill.applied_credit as appliedcredit
-                                      FROM recurring_subscription AS rs LEFT JOIN res_partner res ON rs.customer_id = res.id LEFT JOIN product_product p ON rs.product_id = p.id
-                                       LEFT JOIN product_template temp ON p.product_tmpl_id = temp.id LEFT JOIN billing_schedule_recurring_subscription_rel as bs ON bs.recurring_subscription_id = rs.id LEFT JOIN billing_schedule as bill ON bill.id = bs.billing_schedule_id WHERE 1=1 """
-
+                    FROM recurring_subscription AS rs LEFT JOIN res_partner res ON rs.customer_id = res.id LEFT JOIN product_product p ON rs.product_id = p.id
+                    LEFT JOIN product_template temp ON p.product_tmpl_id = temp.id LEFT JOIN billing_schedule_recurring_subscription_rel as bs ON bs.recurring_subscription_id = rs.id 
+                    LEFT JOIN billing_schedule as bill ON bill.id = bs.billing_schedule_id WHERE 1=1 """
 
         subscription= data ['subscription_id']
         if len(subscription)==1:
@@ -38,7 +38,6 @@ class SubscriptionReportForm(models.AbstractModel):
         query += " ORDER BY rs.sequence_number"
         self.env.cr.execute(query)
         report = self.env.cr.dictfetchall()
-        print(report)
         return {
             'doc_ids': docids,
             'doc_model': 'recurring.subscription',

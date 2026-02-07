@@ -33,7 +33,6 @@ class CreditReportFilter(models.AbstractModel):
 
         self.env.cr.execute(query)
         report = self.env.cr.dictfetchall()
-        print(report)
 
         return {
             'doc_ids': docids,
