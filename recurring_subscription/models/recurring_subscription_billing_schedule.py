@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import datetime
 
 from odoo import fields, models, api
@@ -82,7 +83,6 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                         final=(self.env['recurring.subscription.credit'].search([('create_date','=',cdate)])).credit_amount
             total=record.recurring_amount
             final_total=-final
-
             product=record.product_id.id
             credit_product=self.env.ref('recurring_subscription.product_id1')
             self.env['account.move'].create({
@@ -116,7 +116,6 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                         total = record.recurring_amount
                         final_total = -final_credit
                         product = record.product_id.id
-                        # prod_id = self.env['product.product'].create({'name': "subscription "+ record.name +",  " + str(record.create_date.date()) })
                         credit_product = self.env.ref('recurring_subscription.product_id1')
                         record.env['account.move'].create({
                             'move_type': 'out_invoice',

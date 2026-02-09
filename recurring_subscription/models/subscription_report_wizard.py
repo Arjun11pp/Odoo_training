@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime
 
 from odoo import fields,models
-from odoo.exceptions import UserError
-from odoo.tools import date_utils
-
 
 class SubscriptionReportWizard(models.TransientModel):
     _name = "subscription.report.wizard"
@@ -18,4 +14,3 @@ class SubscriptionReportWizard(models.TransientModel):
             'duration':self.duration,
         }
         return self.env.ref('recurring_subscription.action_report_subscription').report_action(None,data)
-

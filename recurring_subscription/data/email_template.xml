@@ -15,12 +15,10 @@
                        <br/>
                        Your Subscription <span style="font-weight: bold;" t-out="object.sequence_number "></span> with amount  <span style="font-weight: bold;" t-out="object.recurring_amount "></span> has been confirmed!
                        <br/>
-
                        <br/>The due date is <span style="font-weight: bold;" t-out="object.due_date "></span>
                        <br/>
                        <br/>Mitchell Admin
                        <br/>
-
                    </p>
                </div>
            </field>

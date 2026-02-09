@@ -3,7 +3,6 @@
 from odoo import fields,models,api
 from odoo.tools import date_utils
 
-
 class SubscriptionReportForm(models.AbstractModel):
     _name='report.recurring_subscription.report_subscription'
 

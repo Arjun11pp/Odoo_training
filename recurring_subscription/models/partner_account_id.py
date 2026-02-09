@@ -12,6 +12,3 @@ class PartnerAccountId(models.Model):
         'UNIQUE(account_id)',
         'Account ID should be unique',
     )
-
-
-

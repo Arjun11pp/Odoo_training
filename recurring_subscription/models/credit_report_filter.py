@@ -39,5 +39,3 @@ class CreditReportFilter(models.AbstractModel):
             'doc_model': 'recurring.subscription.credit',
             'docs': report,
         }
-
-

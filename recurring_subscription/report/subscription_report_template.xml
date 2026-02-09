@@ -31,14 +31,11 @@
                                         <th>
                                             <strong>Amount</strong>
                                         </th>
-
                                         <th>
                                             <strong>State</strong>
                                         </th>
                                     </tr>
                                 </thead>
-
-
                                 <t t-foreach="docs" t-as="o">
                                     <tbody>
                                         <tr>
@@ -55,7 +52,6 @@
                                             <td>
                                                 <span t-esc="o.get('recurring_amount')"/>
                                             </td>
-
                                             <td>
                                                 <span t-esc="o.get('state').capitalize()"/>
                                             </td>
@@ -105,8 +101,6 @@
                                         </th>
                                     </tr>
                                 </thead>
-
-
                                 <t t-foreach="docs" t-as="o">
                                     <tbody>
                                         <tr>
@@ -116,7 +110,6 @@
                                             <td>
                                                 <span t-esc="o.get('name')"/>
                                             </td>
-
                                             <td>
                                                 <span t-esc="o.get('product').get('en_US')"/>
                                             </td>
@@ -172,14 +165,11 @@
                                         <th>
                                             <strong>Amount</strong>
                                         </th>
-
                                         <th>
                                             <strong>State</strong>
                                         </th>
                                     </tr>
                                 </thead>
-
-
                                 <t t-foreach="docs" t-as="o">
                                     <tbody>
                                         <tr>
@@ -198,7 +188,6 @@
                                             <td>
                                                 <span t-esc="o.get('recurring_amount')"/>
                                             </td>
-
                                             <td>
                                                 <span t-esc="o.get('state').capitalize()"/>
                                             </td>
@@ -224,8 +213,6 @@
                                 </t>
                             </table>
                         </t>
-
-
                         <t t-else="">
                             <table class="o_mrp_bom_expandable table table-borderless">
                                 <thead>
@@ -250,8 +237,6 @@
                                         </th>
                                     </tr>
                                 </thead>
-
-
                                 <t t-foreach="docs" t-as="o">
                                     <tbody>
                                         <tr>
