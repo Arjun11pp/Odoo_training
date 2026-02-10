@@ -34,11 +34,34 @@ class SubscriptionReportForm(models.AbstractModel):
             start_date = date_utils.start_of(fields.Date.today(), "year")
             end_date = date_utils.end_of(fields.Date.today(), "year")
             query += " AND  rs.date >= '%s' AND rs.date <= '%s' " % (start_date, end_date)
+        elif data['duration'] == 'custom':
+            start_date=data['from_date']
+            end_date=data['to_date']
+            query += " AND  rs.date >= '%s' AND rs.date <= '%s' " % (start_date, end_date)
         query += " ORDER BY rs.sequence_number"
+
+
         self.env.cr.execute(query)
         report = self.env.cr.dictfetchall()
+
+        # customers = {o.get('customer') for o in docs}
+        # states = {o.get('state') for o in docs}
+        # applied = {o.get('applied') for o in docs}
+        #
+        # return {
+        #     'doc_ids': docids,
+        #     'doc_model': 'recurring.subscription',
+        #     'docs': docs,
+        #
+        #     'single_customer': len(customers) == 1,
+        #     'single_state': len(states) == 1,
+        #     'single_applied': len(applied) == 1,
+        #     'customer': next(iter(customers)) if len(customers) == 1 else False,
+        #     'state': next(iter(states)) if len(states) == 1 else False,
+        # }
         return {
             'doc_ids': docids,
             'doc_model': 'recurring.subscription',
             'docs': report,
+
         }

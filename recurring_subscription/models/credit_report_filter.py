@@ -11,13 +11,13 @@ class CreditReportFilter(models.AbstractModel):
         LEFT JOIN recurring_subscription AS sub ON cr.recurring_subscription_id = sub.id LEFT JOIN res_partner AS res ON sub.customer_id = res.id 
         LEFT JOIN billing_schedule AS bill ON bill.selected_credit_id = cr.id WHERE 1=1 """
 
-        cr=data['credit_id']
+        cr=data['subscription_id']
         if len(cr) == 1:
-            credit_id=int(cr[0])
-            query += " AND cr.id = %s" % credit_id
+            subscription_id=int(cr[0])
+            query += " AND sub.id = %s" % subscription_id
         elif cr:
             credits_id = str(tuple(cr))
-            query += " AND cr.id IN %s" % credits_id
+            query += " AND sub.id IN %s" % credits_id
         if data['state'] == 'pending':
             state_id = str(data['state'])
             query += " AND cr.state = '%s'" % state_id
@@ -30,10 +30,9 @@ class CreditReportFilter(models.AbstractModel):
         elif data['state'] == 'rejected':
             state_id = str(data['state'])
             query += " AND cr.state = '%s'" % state_id
-
+        query += " ORDER BY cr.id "
         self.env.cr.execute(query)
         report = self.env.cr.dictfetchall()
-
         return {
             'doc_ids': docids,
             'doc_model': 'recurring.subscription.credit',

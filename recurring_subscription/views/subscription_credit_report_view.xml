@@ -15,11 +15,13 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="credit_id" widget="many2many_tags"/>
+                    <field name="subscription_id" widget="many2many_tags"/>
                     <field name="state"/>
                 </group>
                 <footer>
-                    <button string="Print" name="action_credit_report_button"
+                    <button string="Print PDF" name="action_credit_report_button"
+                            type="object" class="btn-primary"/>
+                    <button name="action_print_credit_xlsx" string="Print Excel"
                             type="object" class="btn-primary"/>
                     <button string="cancel" name="cancel" special="cancel"/>
                 </footer>

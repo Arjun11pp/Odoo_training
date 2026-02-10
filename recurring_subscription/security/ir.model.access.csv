@@ -1,6 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
-
 access_recurring_subscription_user,sub.sub_user,recurring_subscription.model_recurring_subscription,recurring_subscription.group_recurring_subscription_user,1,1,1,0
 access_recurring_subscription_credit_user,sub.sub_user,recurring_subscription.model_recurring_subscription_credit,recurring_subscription.group_recurring_subscription_user,1,1,1,0
 access_billing_schedule_user,sub.sub_user,recurring_subscription.model_billing_schedule,recurring_subscription.group_recurring_subscription_user,1,1,1,0
@@ -12,5 +11,4 @@ access_billing_schedule_manager,sub.manager,recurring_subscription.model_billing
 access_partner_account_id_manger,sub.manager,recurring_subscription.model_partner_account_id,recurring_subscription.group_recurring_subscription_manager,1,1,1,1
 access_subscription_wizard_manager,sub.manager,recurring_subscription.model_subscription_report_wizard,recurring_subscription.group_recurring_subscription_manager,1,1,1,1
 access_credit_wizard_manager,sub.manager,recurring_subscription.model_credit_report_wizard,recurring_subscription.group_recurring_subscription_manager,1,1,1,1
-
 

@@ -17,9 +17,13 @@
                 <group>
                     <field name="subscription_id" widget="many2many_tags"/>
                     <field name="duration"/>
+                    <field name="from_date" invisible="duration in ['daily','weekly','monthly','yearly'] or not duration"/>
+                    <field name="to_date" invisible="duration in ['daily','weekly','monthly','yearly'] or not duration"/>
                 </group>
                 <footer>
-                    <button string="Print" name="action_subscription_report_button"
+                    <button string="Print PDF" name="action_subscription_report_button"
+                            type="object" class="btn-primary"/>
+                    <button name="action_print_xlsx" string="Print Excel"
                             type="object" class="btn-primary"/>
                     <button string="cancel" name="action_subscription_report_button" special="cancel"/>
                 </footer>

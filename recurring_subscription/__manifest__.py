@@ -30,6 +30,12 @@
         'report/subscription_report_action.xml',
         'report/credit_report_action.xml',
         'views/menu_list.xml',
-    ]
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'recurring_subscription/static/src/js/action_manager.js',
+
+        ]
+    }
 
 }
