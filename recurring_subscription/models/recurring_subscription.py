@@ -18,7 +18,7 @@ class RecurringSubscription(models.Model):
     due_date=fields.Date(default=fields.Date.add(today(),days=15), string="Due Date",store=True)
     next_billing_date=fields.Date(string="Next Billing Date")
     is_lead=fields.Boolean(string="Is Lead")
-    customer_id=fields.Many2one("res.partner",string="Customer",required=True )
+    customer_id=fields.Many2one("res.partner",string="Customer" )
     description=fields.Char(string="Description")
     terms_and_conditions=fields.Html(string="Terms and Conditions")
     product_id=fields.Many2one(comodel_name='product.product',string="Product",required=True)
@@ -36,7 +36,7 @@ class RecurringSubscription(models.Model):
     @api.depends('credit_ids')
     def _compute_total_credit(self):
         total = sum(self.credit_ids.mapped('credit_amount'))
-        print('tot',total)
+
         self.write({'total_credit': total})
 
     @api.onchange('establishment')

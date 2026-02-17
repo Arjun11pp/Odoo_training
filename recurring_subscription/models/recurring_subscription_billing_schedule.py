@@ -20,12 +20,17 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                                  string="Company", default=lambda self: self.env.user.company_id.id)
     currency_id = fields.Many2one('res.currency', string="Currency",
                                   related='company_id.currency_id',default=lambda self: self.env.user.company_id.currency_id.id)
-    total_credit=fields.Monetary(string='Total Credit amount' ,default= 0)
+    total_credit=fields.Monetary(string='Total Credit amount' ,default= 0,compute='onchange_credit_amount')
     credit_ids=fields.Many2many(comodel_name='recurring.subscription.credit', compute='_compute_credit_list')
     count=fields.Integer(compute='_compute_credit_count' , string="Subscription Count")
     invoice_ids=fields.Many2many('account.move', string='Invoice')
     applied_credit=fields.Monetary(string='Applied Credit')
     selected_credit_id=fields.Many2one(string='Selected Credit',comodel_name='recurring.subscription.credit')
+
+    def test_fun(self):
+        print('functioncaling')
+        print(self.id)
+
 
     @api.depends('recurring_subscription_ids')
     def _compute_credit_count(self):
@@ -64,7 +69,7 @@ class RecurringSubscriptionBillingSchedule(models.Model):
     def onchange_credit_amount(self):
         for rec in self:
             for record in rec.recurring_subscription_ids:
-                credit_list = record.mapped('credit_ids')
+                credit_list = record.mapped('credit_ids').filtered(lambda c: c.state == 'approved')
                 amount=credit_list.mapped('credit_amount')
                 rec.update({'total_credit':sum(amount)})
 
@@ -92,7 +97,7 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                     'line_ids': [Command.create({'product_id': product ,'price_unit' : total }) ,
                                  Command.create({'product_id': credit_product.id ,'price_unit' : final_total }) ,
                                 ]})
-            self.update({'active': False})
+            # self.update({'active': False})
             self.update({'applied_credit': final})
             self.update({'selected_credit_id': selected_credit})
 
@@ -124,6 +129,6 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                             'line_ids': [Command.create({'product_id': product, 'price_unit': total}) ,
                                          Command.create({'product_id': credit_product.id, 'price_unit': final_total})
                                          ]})
-                        rec.write({'active': False})
+                        # rec.write({'active': False})
                         self.update({'applied_credit': final_credit})
                         self.update({'selected_credit_id': selected_credit})

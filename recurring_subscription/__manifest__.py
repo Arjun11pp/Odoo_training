@@ -29,13 +29,20 @@
         'report/ir_actions_report.xml',
         'report/subscription_report_action.xml',
         'report/credit_report_action.xml',
+        'views/website_view.xml',
+        'views/website_credit_view.xml',
+        'views/website_billing_schedule.xml',
         'views/menu_list.xml',
     ],
     'assets': {
+        'web.assets_frontend': [
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+            'recurring_subscription/static/src/js/select2.js',
+        ],
         'web.assets_backend': [
             'recurring_subscription/static/src/js/action_manager.js',
+        ],
 
-        ]
     }
 
 }
