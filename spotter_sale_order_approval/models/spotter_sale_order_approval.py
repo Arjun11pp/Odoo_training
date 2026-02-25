@@ -14,5 +14,12 @@ class SpotterSaleOrderApproval(models.Model):
     def action_approve1(self):
         self.write({'state': 'user1'})
 
+
     def action_approve2(self):
         self.write({'state': 'user2'})
+
+    def action_quotation_send(self):
+
+        result=super(SpotterSaleOrderApproval,self).action_quotation_send()
+        self.write({'state': 'sent'})
+        return result

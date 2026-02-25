@@ -31,7 +31,6 @@ class RecurringSubscriptionBillingSchedule(models.Model):
         print('functioncaling')
         print(self.id)
 
-
     @api.depends('recurring_subscription_ids')
     def _compute_credit_count(self):
         for rec in self:
@@ -69,14 +68,17 @@ class RecurringSubscriptionBillingSchedule(models.Model):
     def onchange_credit_amount(self):
         for rec in self:
             for record in rec.recurring_subscription_ids:
-                credit_list = record.mapped('credit_ids').filtered(lambda c: c.state == 'approved')
+                credit_list = record.credit_ids.filtered(lambda l: l.state == 'approved')
+                print('cr',credit_list)
                 amount=credit_list.mapped('credit_amount')
+                print('am',amount)
                 rec.update({'total_credit':sum(amount)})
 
     def action_create_billing_invoice(self):
         for record in self.recurring_subscription_ids:
             partner=record.customer_id
             credit_list=self.env['recurring.subscription.credit'].search([('recurring_subscription_id','=',record.id),('state','=','approved')])
+            final = 0
             for credit in credit_list:
                 if credit:
                     if credit.credit_amount == record.recurring_amount :
@@ -97,7 +99,7 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                     'line_ids': [Command.create({'product_id': product ,'price_unit' : total }) ,
                                  Command.create({'product_id': credit_product.id ,'price_unit' : final_total }) ,
                                 ]})
-            # self.update({'active': False})
+            self.update({'active': False})
             self.update({'applied_credit': final})
             self.update({'selected_credit_id': selected_credit})
 
@@ -108,8 +110,8 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                 for record in rec.recurring_subscription_ids:
                     if record.due_date < datetime.date.today():
                         partner = record.customer_id
-                        credit_list = record.env['recurring.subscription.credit'].search(
-                            [('recurring_subscription_id', '=', record.id),('state','=','approved')])
+                        credit_list = record.env['recurring.subscription.credit'].search([('recurring_subscription_id', '=', record.id),('state','=','approved')])
+                        final = 0
                         for credit in credit_list:
                             if credit.credit_amount == record.recurring_amount:
                                 final_credit = credit.credit_amount
@@ -129,6 +131,35 @@ class RecurringSubscriptionBillingSchedule(models.Model):
                             'line_ids': [Command.create({'product_id': product, 'price_unit': total}) ,
                                          Command.create({'product_id': credit_product.id, 'price_unit': final_total})
                                          ]})
-                        # rec.write({'active': False})
+                        rec.write({'active': False})
                         self.update({'applied_credit': final_credit})
                         self.update({'selected_credit_id': selected_credit})
+
+    def action_create_billing_invoice_website(self,bill_id):
+        print("bill_id",bill_id)
+        # b=self.filtered(lambda rec: rec.id==bill_id)
+        b=self.search([('id','=',bill_id)])
+        print(b.recurring_subscription_ids)
+        for record in b.recurring_subscription_ids:
+            partner=record.customer_id
+            credit_list=self.env['recurring.subscription.credit'].search([('recurring_subscription_id','=',record.id),('state','=','approved')])
+            final = 0
+            for credit in credit_list:
+                if credit:
+                    if credit.credit_amount == record.recurring_amount :
+                        final=credit.credit_amount
+                    elif credit.credit_amount <= record.recurring_amount :
+                        cdate=min(credit.mapped('create_date'))
+                        final=(self.env['recurring.subscription.credit'].search([('create_date','=',cdate)])).credit_amount
+            total=record.recurring_amount
+            final_total=-final
+            product=record.product_id.id
+            credit_product=self.env.ref('recurring_subscription.product_id1')
+            self.env['account.move'].create({
+                'move_type': 'out_invoice',
+                'partner_id': partner.id,
+                'billing_invoice_id' : self.id,
+                    'line_ids': [Command.create({'product_id': product ,'price_unit' : total }) ,
+                                 Command.create({'product_id': credit_product.id ,'price_unit' : final_total }) ,
+                                ]})
+            b.write({'active': False})

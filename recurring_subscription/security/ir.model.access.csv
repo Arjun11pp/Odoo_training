@@ -1,4 +1,4 @@
-    id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 access_recurring_subscription_user,sub.sub_user,recurring_subscription.model_recurring_subscription,recurring_subscription.group_recurring_subscription_user,1,1,1,0
 access_recurring_subscription_credit_user,sub.sub_user,recurring_subscription.model_recurring_subscription_credit,recurring_subscription.group_recurring_subscription_user,1,1,1,0

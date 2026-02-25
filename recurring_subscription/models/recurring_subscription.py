@@ -36,7 +36,6 @@ class RecurringSubscription(models.Model):
     @api.depends('credit_ids')
     def _compute_total_credit(self):
         total = sum(self.credit_ids.mapped('credit_amount'))
-
         self.write({'total_credit': total})
 
     @api.onchange('establishment')

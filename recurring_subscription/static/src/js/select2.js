@@ -1,23 +1,34 @@
 /** @odoo-module **/
-console.log("33221")
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { loadJS } from "@web/core/assets";
+//console.log('W');
 
-publicWidget.registry.WebsiteCustomerContactRequestForm = publicWidget.Widget.extend({
+publicWidget.registry.WarningWidget = publicWidget.Widget.extend({
+    selector: '#backend_warning',
 
-   selector: ".s_website_form_required",
-   init: function (parent, options) {
-       this._super.apply(this, arguments);
+    start: function () {
+        const message = this.$el.data('message');
+        if (message) {
 
-      // Load Select2 dynamically (ensure it's included)
-    loadJS("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js").then(() => {
-           const selects = document.querySelectorAll('.s_website_form_required select');
-
-          $(".s_website_form_required select").select2({
-        placeholder: "Select an option",
-        allowClear: true
-    });
-       }).catch(err => console.error("Error loading Select2:", err));
-   },
+            alert(message);
+        }
+        return this._super.apply(this, arguments);
+    },
 });
- console.log("112233")
+
+    publicWidget.registry.WebsiteCustomerContactRequestForm = publicWidget.Widget.extend({
+    selector: ".s_website_form_required1",
+
+    start: function () {
+        const self = this;
+        return this._super.apply(this, arguments).then(function () {
+            return loadJS("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js");
+        }).then(() => {
+            self.$("select").select2({
+                placeholder: "Select an option",
+                allowClear: true,
+                width: '100%'
+            });
+        }).catch(err => console.error("Error loading Select2:", err));
+    },
+});

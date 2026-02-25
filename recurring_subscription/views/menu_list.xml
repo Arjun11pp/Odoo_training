@@ -9,4 +9,5 @@
         <menuitem id="menu_subscription_report" name="Report"  parent="menu_recurring_subscription" sequence="5"  />
         <menuitem id="menu_subscription_report_submenu" name="Subscription Report"  parent="menu_subscription_report" sequence="2"  action="action_subscription_report_wizard"/>
         <menuitem id="menu_subscription_credit_report_submenu" name="Credit Report"  parent="menu_subscription_report" sequence="3"  action="action_credit_report_wizard"/>
+        <menuitem id="menu_subscription_submenu" name="Subscriptions"  parent="menu_recurring_subscription" sequence="4"  />
 </odoo>

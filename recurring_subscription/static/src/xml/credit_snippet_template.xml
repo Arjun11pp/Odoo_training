@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+<t t-name="recurring_subscription.category_data">
+    <section class="categories_section">
+        <div class="container py-4">
+            <h5 class="mb-4">Credit</h5>
+            <div id="creditCarousel" class="carousel slide px-5" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <t t-foreach="Array.from({length: Math.ceil(result.credits_ids.length / 4)})" t-as="page" t-key="page_index">
+                        <div t-att-class="'carousel-item ' + (page_index === 0 ? 'active' : '')">
+                            <div class="row gx-3">
+                                <t t-foreach="result.credits_ids.slice(page_index * 4, (page_index * 4) + 4)" t-as="credit" t-key="credit.id">
+                                    <div class="col-lg-3 col-md-6 mb-4">
+                                        <a t-attf-href="/get_credit_detail/{{credit.id}}" class="text-decoration-none text-reset">
+                                            <div class="card h-100 shadow-sm border-0">
+                                                <figure class="ratio ratio-16x9 mb-0">
+                                                    <img class="card-img-top" t-attf-src="data:image/png;base64,{{credit.credit_image}}" style="object-fit: cover;"/>
+                                                </figure>
+                                                <div class="card-body p-3">
+                                                    <h6 class="card-title mb-2" t-esc="credit.recurring_subscription_id[1]"/>
+                                                    <p>Partner: <span t-esc="credit.partner_id[1]"/></p>
+                                                    <p>Amount: $<t t-esc="credit.credit_amount"/></p>
+                                                    <p>Status: <t t-esc="credit.state"/></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#creditCarousel"
+                        data-bs-slide="prev" style="width: 40px; filter: invert(100%); left: 0;">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#creditCarousel"
+                        data-bs-slide="next" style="width: 40px; filter: invert(100%); right: 0;">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+</t>
+</templates>

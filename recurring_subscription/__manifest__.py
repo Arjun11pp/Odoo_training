@@ -32,12 +32,16 @@
         'views/website_view.xml',
         'views/website_credit_view.xml',
         'views/website_billing_schedule.xml',
+        'views/snippets/snippet_template.xml',
+
         'views/menu_list.xml',
     ],
     'assets': {
         'web.assets_frontend': [
             'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             'recurring_subscription/static/src/js/select2.js',
+            'recurring_subscription/static/src/js/credit_snippet.js',
+            'recurring_subscription/static/src/xml/credit_snippet_template.xml',
         ],
         'web.assets_backend': [
             'recurring_subscription/static/src/js/action_manager.js',

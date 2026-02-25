@@ -1,10 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <data>
+        <template id="billing_invoice_success" name="Billing Created">
+            <t t-call="website.layout">
+                <section class="d-flex align-items-center justify-content-center vh-100" style="background-color: #f8f9fa;">
+                    <div class="text-center">
+                        <h3 class="text-success mb-3">Invoice created Successfully!</h3>
+                        <a href="/website/billing/view" class="btn btn-primary rounded-3">Create another Billing </a>
+                    </div>
+                </section>
+            </t>
+        </template>
+
+        <template id="billing_detail_view" name="bill Detail">
+            <t t-call="website.layout">
+                <div id="wrap" class="container mt32 mb32">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>billing :
+                                <t t-esc="bill.name"/>
+                            </h1>
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Subscription:</strong>
+                                            <t t-foreach="bill.recurring_subscription_ids" t-as="sub">
+                                                <t t-esc="sub.name"/>,
+                                            </t>
+                                            <br/>
+                                            <br/>
+                                            <strong>bill Amount:</strong>
+                                            <p t-field="bill.total_credit" t-options='{"widget": "monetary"}'/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Period:</strong>
+                                            <p t-field="bill.period"/>
+                                            <a t-att-href="'/website/billing_create_invoice/views?bill_id=%s' % bill.id"
+                                               groups="recurring_subscription.group_recurring_subscription_manager" class="btn btn-secondary">Create Invoice
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/website/billing/view" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
         <template id="billing_list" name="Billing Subscription List">
             <t t-call="website.layout">
                 <div class="container my-5">
-                    <h3 class="text-center mb-4">Recurring Subscriptions</h3>
+                    <h3 class="text-center mb-4">Billing Schedule</h3>
                     <div class="mt-3">
                         <a href="/website/billing/form" class="btn btn-primary rounded-3">Create New</a>
                     </div>
@@ -15,8 +66,8 @@
                                 <tr>
                                     <th class="fw-semibold">Name</th>
                                     <th class="fw-semibold">Subscriptions</th>
-                                    <th class="fw-semibold">Total credits</th>
-                                    <th class="fw-semibold text-center">period</th>
+                                    <th class="fw-semibold text-left">period</th>
+                                    <th> </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -30,11 +81,12 @@
                                                 <t t-esc="sub.name"/>,
                                             </t>
                                         </td>
-                                        <td class="text-center">
-                                            <t t-esc="bill.total_credit"/>
-                                        </td>
                                         <td>
                                             <t t-esc="bill.period"/>
+                                        </td>
+                                        <td>
+                                            <a t-att-href="'/website/unique_billing/views?bill_id=%s' % bill.id">View
+                                            </a>
                                         </td>
                                     </tr>
                                 </t>
@@ -52,8 +104,7 @@
 
         <template id="billing_form_template" name="Customer Form">
             <t t-call="website.layout">
-                <section class="d-flex align-items-center justify-content-center vh-100"
-                         style="background-color: #f8f9fa;">
+                <section class="d-flex align-items-center justify-content-center vh-100" style="background-color: #f8f9fa;">
                     <div class="card shadow-lg rounded-4" style="width: 400px;">
                         <div class="card-body p-5">
                             <h3 class="text-center mb-4">Create Billing Schedule</h3>
@@ -62,7 +113,7 @@
                                     <label class="form-label fw-semibold">Name</label>
                                     <input type="text" name="name" class="form-control rounded-2" required="True"/>
                                 </div>
-                                <div class="s_website_form_required">
+                                <div class="s_website_form_required1">
                                     <label for="sub_ids">Choose the subscriptions :</label>
                                     <select name="sub_ids" t-attf-class="form-control select2_box" required="True" multiple="multiple">
                                         <t t-foreach="subscriptions" t-as="subscription">
@@ -72,12 +123,14 @@
                                         </t>
                                     </select>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Period</label>
+                                    <input type="date" name="period" class="form-control rounded-2" required="True"/>
+                                </div>
                                 <br/>
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary btn-block rounded-3 py-2">
-                                        Submit
-                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-block rounded-3 py-2"> Submit </button>
                                 </div>
                             </form>
                         </div>
@@ -92,9 +145,7 @@
                          style="background-color: #f8f9fa;">
                     <div class="text-center">
                         <h3 class="text-success mb-3">Billing created Successfully!</h3>
-                        <a href="/website/billing/view" class="btn btn-primary rounded-3">Create another
-                            Billing
-                        </a>
+                        <a href="/website/billing/view" class="btn btn-primary rounded-3">Create another Billing </a>
                     </div>
                 </section>
             </t>
