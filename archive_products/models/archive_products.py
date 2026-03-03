@@ -28,12 +28,12 @@ class ArchiveProducts(models.Model):
             product.sales_count = product.uom_id.round(r.get(product.id, 0))
         return r
 
-    def action_archive_products(self):
-        for rec in (self.search([('active', '=', True)])):
-            products=rec.filtered(lambda p:p.sales_count == 0)
-            for record in products:
-                print(record)
-                record.write({'active': False } )
+    # def action_archive_products(self):
+    #     for rec in (self.search([('active', '=', True)])):
+    #         products=rec.filtered(lambda p:p.sales_count == 0)
+    #         for record in products:
+    #             print(record)
+    #             record.write({'active': False } )
 
     def _compute_quantities(self):
         result=super(ArchiveProducts,self)._compute_quantities()

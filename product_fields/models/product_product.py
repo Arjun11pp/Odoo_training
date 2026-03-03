@@ -10,7 +10,7 @@ class ProductProduct(models.Model):
         quantity =  sum(self.env['purchase.order.line'].search([('product_id', '=', self.id)]).filtered(lambda line: line.state== 'purchase').mapped('product_qty'))
 
         total_price = sum(self.env['purchase.order.line'].search([('product_id', '=', self.id)]).filtered(lambda line: line.state== 'purchase').mapped('price_subtotal'))
-        if quantity>0 and total_price>0:
+        if quantity>0 and total_price> 0 :
             avg = total_price / quantity
             self.write({'average_cost' :  avg })
         else:

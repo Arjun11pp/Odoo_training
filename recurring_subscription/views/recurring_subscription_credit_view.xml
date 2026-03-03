@@ -55,7 +55,7 @@
                         <field name="due_date"/>
                         <field name="company_id"/>
                         <field name="period_date"/>
-                        <field name="credit_image"  options="{'size': [150,150]}"/>
+                        <field name="credit_image" widget="image" options="{'size': [150,150]}"/>
                     </group>
                 </sheet>
                <chatter/>

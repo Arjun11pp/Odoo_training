@@ -32,6 +32,7 @@ class RecurringSubscription(models.Model):
     billing_ids=fields.Many2many('billing.schedule',string='billing schedule',readonly=True)
     active = fields.Boolean(string='Active', default=True)
     total_credit=fields.Monetary(compute='_compute_total_credit', string='Total Credit',store=True)
+    image=fields.Binary(string="Image",required=True)
 
     @api.depends('credit_ids')
     def _compute_total_credit(self):

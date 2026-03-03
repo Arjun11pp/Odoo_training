@@ -3,21 +3,10 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 import { loadJS } from "@web/core/assets";
 
 
-publicWidget.registry.WarningWidget = publicWidget.Widget.extend({
-    selector: '#backend_warning',
 
-    start: function () {
-        const message = this.$el.data('message');
-        if (message) {
 
-            alert(message);
-        }
-        return this._super.apply(this, arguments);
-    },
-});
-
-    publicWidget.registry.WebsiteCustomerContactRequestForm = publicWidget.Widget.extend({
-    selector: ".s_website_form_required1",
+    publicWidget.registry.WebsiteCustomerRequestForm = publicWidget.Widget.extend({
+    selector: ".s_website_form_multi",
 
     start: function () {
         const self = this;

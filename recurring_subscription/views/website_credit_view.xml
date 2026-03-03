@@ -59,7 +59,7 @@
                                     <th class="fw-semibold text-center">Credit Amount</th>
                                     <th class="fw-semibold">Period date</th>
                                     <th class="fw-semibold">State</th>
-                                    <th></th>
+                                    <th> </th>
                                 </tr>
                             </thead>
                             <tbody>

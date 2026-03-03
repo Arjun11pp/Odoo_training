@@ -20,8 +20,8 @@ class RecurringSubscriptionCredit(models.Model):
     establishment_id=fields.Char(string='Establishment',related="recurring_subscription_id.establishment")
     due_date=fields.Date(related="recurring_subscription_id.due_date", string="Due Date")
     active = fields.Boolean(string='Active', default=True)
-    file_name = fields.Char(string="File Name")
-    credit_image=fields.Image(string='Image',required=True)
+    credit_image = fields.Image(string='Image', related='recurring_subscription_id.image')
+
 
     _check_credit_amount = models.Constraint(
         'CHECK(credit_amount > 0 )',

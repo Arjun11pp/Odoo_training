@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-from odoo import models,fields,_
+from odoo import models,fields,api,_
 from odoo import Command
 from odoo.exceptions import UserError
 
@@ -24,7 +24,7 @@ class MaterialRequest(models.Model):
             'name': 'purchase orders',
             'view_mode': 'list,form',
             'res_model': 'purchase.order',
-            'domain': [('purchase_order_id', '=', self.ids)],
+            'domain': [('purchase_order_id_mat', '=', self.ids)],
             'context': "{'create': False}"
         }
 
@@ -56,7 +56,7 @@ class MaterialRequest(models.Model):
                     for vendor in vendors:
                         self.env['purchase.order'].create({
                             "partner_id": vendor.partner_id.id,
-                            'purchase_order_id': self.id,
+                            'purchase_order_id_mat': self.id,
                             "order_line": [
                                 Command.create({
                                     'product_id': order.product_id.id,
@@ -69,7 +69,7 @@ class MaterialRequest(models.Model):
                     random_vendor=random.choice(self.env['res.partner'].search([]).ids)
                     self.env['purchase.order'].create({
                             "partner_id": random_vendor,
-                        'purchase_order_id': self.id,
+                        'purchase_order_id_mat': self.id,
                             "order_line": [
                                 Command.create({
                                     'product_id': order.product_id.id,
@@ -95,4 +95,50 @@ class MaterialRequest(models.Model):
                     body=_("Requisition Head has been Approved"),)
         self.write({'state':'head'})
 
+    def action_head_approval_website(self,req_id):
+        req = self.search([('id', '=', req_id)])
+        for order in req.request_line_ids:
+            if order.request_type == 'po':
+                vendors = self.env['product.supplierinfo'].search([('product_id', '=', order.product_id.id)])
+                if vendors:
+                    for vendor in vendors:
+                        self.env['purchase.order'].create({
+                            "partner_id": vendor.partner_id.id,
+                            'purchase_order_id_mat': req.id,
+                            "order_line": [
+                                Command.create({
+                                    'product_id': order.product_id.id,
+                                    'name': order.product_id.name,
+                                    'price_unit': vendor.price,
+                                    'product_qty': order.quantity,
+                                }),
+                            ]})
+                else:
+                    random_vendor = random.choice(self.env['res.partner'].search([]).ids)
+                    self.env['purchase.order'].create({
+                        "partner_id": random_vendor,
+                        'purchase_order_id_mat': req.id,
+                        "order_line": [
+                            Command.create({
+                                'product_id': order.product_id.id,
+                                'price_unit': order.product_id.lst_price,
+                                'product_qty': order.quantity,
+                            }),
+                        ]})
+            else:
+                picking = self.env.ref('stock.picking_type_internal').id
+                self.env['stock.picking'].create({
+                    'picking_type_id': picking,
+                    'transfer_id': req.id,
+                    'partner_id': self.employee_id.id,
+                    'location_id': order.source_location_id.id,
+                    'location_dest_id': order.destination_location_id.id,
+                    'move_ids': [Command.create({
+                        'product_id': order.product_id.id,
+                        'product_uom_qty': order.quantity,
+
+                    })],
+                })
+
+        req.write({'state': 'head'})
 

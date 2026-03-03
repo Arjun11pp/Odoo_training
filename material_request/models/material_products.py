@@ -11,3 +11,12 @@ class MaterialProducts(models.Model):
     request_type = fields.Selection([('po', 'Purchase Order'), ('internal', 'Internal transfer')], required=True, string="Request Type")
     source_location_id = fields.Many2one(comodel_name='stock.location',string="Source Location")
     destination_location_id=fields.Many2one(comodel_name='stock.location',string="Destination Location")
+
+    @api.onchange('request_type')
+    def onchange_request_type(self):
+        print("123")
+        for rec in self:
+            if rec.request_type == 'po':
+                # rec.write({'source_location_id':False})
+                rec.source_location_id = False
+

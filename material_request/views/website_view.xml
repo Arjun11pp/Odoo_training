@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="request_form_view">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <div class="container">
+                    <div class="header">
+                        <h3>Online Material Request</h3>
+                    </div>
+                    <form enctype="multipart/form-data" class="o_mark_required">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="s_website_form_rows row">
+                            <div class="col-12 mb-3">
+                                <label class="col-form-label" for="customer">
+                                    <span>Name</span>
+                                    <span class="s_website_form_mark">*</span>
+                                </label>
+                                <input type="text" id="name" name="name" class="form-control rounded-2" required="True"/>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="col-form-label" for="date">
+                                    <span>Date</span>
+                                    <span class="s_website_form_mark">*</span>
+                                </label>
+                                <input id="date" type="date" class="form-control s_website_form_input" name="date" required="1"/>
+                            </div>
+                            <div class="col-12">
+                                <table class="table table-bordered mt-3" id="material_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Material *</th>
+                                            <th>Quantity *</th>
+                                            <th>Operation Type *</th>
+                                            <th>Source Location *</th>
+                                            <th>Destination Location *</th>
+                                            <th width="5%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="material_order_line">
+                                            <td>
+                                                <select name="product" class="form-control s_website_form_input" required="True">
+                                                    <option value="">Select Material</option>
+                                                    <t t-foreach="products" t-as="product">
+                                                        <option t-att-value="product.id">
+                                                            <t t-esc="product.display_name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control total_cost" name="quantity"
+                                                       required="True" id="quantity" value="1" placeholder="Quantity"/>
+                                            </td>
+                                            <td>
+                                                <select name="operation" required="True" class="form-control s_website_form_input operation">
+                                                    <option value="">Select Operation</option>
+                                                    <option value="po">Purchase Order
+                                                    </option>
+                                                    <option value="internal">Internal Transfer
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="source" class="form-control s_website_form_input">
+                                                    <option value="">Select Source Location</option>
+                                                    <t t-foreach="locations" t-as="location">
+                                                        <option t-att-value="location.id">
+                                                            <t t-esc="location.complete_name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="destination" class="form-control s_website_form_input">
+                                                    <option value="">Select Destination Location</option>
+                                                    <t t-foreach="locations" t-as="location">
+                                                        <option t-att-value="location.id">
+                                                            <t t-esc="location.complete_name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn fa fa-trash-o remove_line text-danger"></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="button" class="btn btn-info add_total_project">
+                                    <i class="fa fa-plus"></i> Add Material
+                                </button>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="button" class="custom_create btn btn-primary btn-block" groups="material_request.group_material_request_user">
+                                    Create Request
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="req_detail_view" name="Request Detail">
+        <t t-call="website.layout">
+            <div id="wrap" class="container mt32 mb32">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Material Requests:
+                            <t t-esc="requests.req_name"/>
+                        </h1>
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Employee:</strong>
+                                        <p t-field="requests.employee_id.name"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Date</strong>
+                                        <p t-field="requests.date"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Status</strong>
+                                        <p t-field="requests.state"/>
+                                    </div>
+                                    <!--                                     <div class="col-md-6">-->
+                                    <!--                            <t t-if="requests.state == 'head'">-->
+                                    <!--                             <a t-att-href="'/website/request_po/views?req_id=%s' % requests.id"-->
+                                    <!--                                        groups="material_request.group_material_request_head" class="btn btn-secondary" >Purchase Order</a>-->
+                                    <!--                            </t>-->
+                                    <!--                            <t t-if="requests.state == 'head'">-->
+                                    <!--                            <a t-att-href="'/website/request_Internal/views?req_id=%s' % requests.id"-->
+                                    <!--                                        groups="material_request.group_material_request_head" class="btn btn-secondary" >Internal transfer</a>-->
+                                    <!--                            </t></div>-->
+
+                                    <table class="table table-sm table-bordered mt-2">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Product</th>
+                                                <th class="text-left">Request Type</th>
+                                                <t t-if="internal">
+                                                    <th class="text-left">Source Location</th>
+                                                </t>
+                                                <t t-if="internal">
+                                                    <th class="text-left">Destination Location</th>
+                                                </t>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="requests.request_line_ids" t-as="pro">
+                                                <tr>
+                                                    <td>
+                                                        <span t-field="pro.product_id.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="pro.request_type"/>
+                                                    </td>
+                                                    <t t-if="internal">
+                                                        <td>
+                                                            <span t-field="pro.source_location_id"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-field="pro.destination_location_id"/>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <t t-if="requests.state == 'draft'">
+                                <div class="col-md-6">
+                                    <a t-att-href="'/website/request_send/views?req_id=%s' % requests.id"
+                                       groups="material_request.group_material_request_user" class="btn btn-secondary">Send
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-if="requests.state == 'submitted'">
+                                <div class="col-md-6">
+                                    <a t-att-href="'/website/request_approve/views?req_id=%s' % requests.id"
+                                       groups="material_request.group_material_request_manager" class="btn btn-secondary">Approve
+                                    </a>
+                                </div>
+                            </t>
+                            <div class="col-md-6">
+                                <t t-if="requests.state == 'approved'">
+                                    <a t-att-href="'/website/request_head/views?req_id=%s' % requests.id"
+                                       groups="material_request.group_material_request_head" class="btn btn-secondary"> Approve
+                                    </a>
+                                </t>
+                                <t t-if="requests.state == 'approved'">
+                                    <a t-att-href="'/website/request_head_cancel/views?req_id=%s' % requests.id"
+                                       groups="material_request.group_material_request_head" class="btn btn-secondary"> Cancel
+                                    </a>
+                                </t>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/website/request/view" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="request_list" name="Customer Subscription List">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <h3 class="text-center mb-4">Material requests</h3>
+                <div class="mt-3">
+                    <a href="/website/request/form" class="btn btn-primary rounded-3" groups="material_request.group_material_request_user">Create New
+                    </a>
+                </div>
+                <br/>
+                <div class="table-responsive shadow-sm rounded-4 bg-white p-4">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="fw-semibold">Name</th>
+                                <th class="fw-semibold">Employee</th>
+                                <th class="fw-semibold text-center">Date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="requests" t-as="req">
+                                <tr>
+                                    <td>
+                                        <t t-esc="req.req_name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="req.employee_id.name"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-esc="req.date"/>
+                                    </td>
+                                    <td>
+                                        <a t-att-href="'/website/request_view/views?req_id=%s' % req.id">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not requests">
+                                <tr>
+                                    <td>No subscriptions found.</td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+    <record id="material_customer_form" model="website.menu">
+        <field name="name">Material Request</field>
+        <field name="url">/website/request/view</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence" type="int">90</field>
+    </record>
+</odoo>
