@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//Orderline" position="inside">
+            <t t-if="line.product_id.product_tmpl_id.product_owner_id">
+               <br/>
+                    Owner: <t t-esc="line.product_id.product_tmpl_id.product_owner_id.name"/>
+            </t>
+        </xpath>
+    </t>
+</templates>
+
+<!--<templates id="template" xml:space="preserve">-->
+<!--    <t t-inherit="point_of_sale.Orderline" t-inherit-mode="extension">-->
+<!--        <xpath expr="//small[hasclass('attribute-line')]" position="after">-->
+<!--            <t t-if="props.line.product_id.product_tmpl_id.product_owner_id">-->
+<!--               <br/>-->
+<!--                    Owner: <t t-esc="props.line.product_id.product_tmpl_id.product_owner_id.name"/>-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--    </t>-->
+<!--</templates>-->

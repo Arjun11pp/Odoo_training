@@ -39,7 +39,7 @@
     'assets': {
         'web.assets_frontend': [
             'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-            'recurring_subscription/static/src/js/select2.js',
+            'recurring_subscription/s   tatic/src/js/select2.js',
             'recurring_subscription/static/src/js/credit_snippet.js',
             'recurring_subscription/static/src/xml/credit_snippet_template.xml',
         ],
