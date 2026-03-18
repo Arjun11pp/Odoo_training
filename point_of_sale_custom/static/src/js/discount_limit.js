@@ -10,7 +10,7 @@ import { PosStore } from "@point_of_sale/app/services/pos_store";
 
 let orderDiscount = 0;
 patch(PosStore.prototype, {
-    async pay() {
+async pay() {
         super.pay();
         console.log('this1234',this);
         var total_order_discount =0
