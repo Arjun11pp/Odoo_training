@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="credit_detail_view" name="credit Detail">
+            <t t-call="website.layout">
+                <div id="wrap" class="container mt32 mb32">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>credit:
+                                <t t-esc="credit.recurring_subscription_id.name"/>
+                            </h1>
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Customer:</strong>
+                                            <p t-field="credit.partner_id.name"/>
+                                            <strong>Subscription:</strong>
+                                            <p t-field="credit.recurring_subscription_id.name"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Credit Amount:</strong>
+                                            <p t-field="credit.credit_amount" t-options='{"widget": "monetary"}'/>
+                                            <strong>Status:</strong>
+                                            <p t-field="credit.state"/>
+                                        </div>
+                                        <t t-if="credit.state != 'approved'">
+                                            <div class="col-md-6">
+                                                <a t-att-href="'/website/approve_credit/views?sub_id=%s' % credit.id"
+                                                   groups="recurring_subscription.group_recurring_subscription_manager" class="btn btn-secondary">approve
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/website/credit/view" class="btn btn-secondary">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="credit_list" name="Subscription Credit List">
+            <t t-call="website.layout">
+                <div class="container my-5">
+                    <h3 class="text-center mb-4">Recurring Subscription Credits</h3>
+                    <div class="mt-3">
+                        <a href="/website/credit/form" class="btn btn-primary rounded-3">Create New</a>
+                    </div>
+                    <br/>
+                    <div class="table-responsive shadow-sm rounded-4 bg-white p-4">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fw-semibold">Name</th>
+                                    <th class="fw-semibold">Customer</th>
+                                    <th class="fw-semibold text-center">Credit Amount</th>
+                                    <th class="fw-semibold">Period date</th>
+                                    <th class="fw-semibold">State</th>
+                                    <th> </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="subscriptions" t-as="sub">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="sub.recurring_subscription_id.name    "/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="sub.partner_id.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-esc="sub.credit_amount"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="sub.period_date"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="sub.state"/>
+                                        </td>
+                                        <td>
+                                            <a t-att-href="'/website/unique_credit/views?sub_id=%s' % sub.id">View</a>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="not subscriptions">
+                                    <tr>
+                                        <td>No subscriptions found.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="credit_form_template" name="Customer Form">
+            <t t-call="website.layout">
+                <section class="d-flex align-items-center justify-content-center vh-100" style="background-color: #f8f9fa;">
+                    <div class="card shadow-lg rounded-4" style="width: 400px;">
+                        <div class="card-body p-5">
+                            <h3 class="text-center mb-4">Create Recurring Subscription Credit</h3>
+                            <form action="/website/credit/create" method="post">
+                                <div>
+                                    <label for="sub_id">Choose the subscription:</label>
+                                    <select name="sub_id" class="form-select" required="True">
+                                        <option value="">-- Select an option --</option>
+                                        <t t-foreach="subscriptions" t-as="subscription">
+                                            <option t-att-value="subscription.id">
+                                                <t t-esc="subscription.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div id="editModal" class="modal">
+                                    <div class="modal-content">
+                                        <h2 style="margin-left: 20px;">Edit Task</h2>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Amount</label>
+                                    <input type="number" name="amount" class="form-control rounded-2" required="True"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Period date</label>
+                                    <input type="date" name="date" class="form-control rounded-2" required="True"/>
+                                </div>
+                                <br/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-block rounded-3 py-2"> Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="backend_warning" t-att-data-message="warning_message">
+                    </div>
+                </section>
+            </t>
+        </template>
+
+        <template id="credit_success_template" name="Customer Created">
+            <t t-call="website.layout">
+                <section class="d-flex align-items-center justify-content-center vh-100"
+                         style="background-color: #f8f9fa;">
+                    <div class="text-center">
+                        <h3 class="text-success mb-3">The entered credit amount is more than the subscription recurring amount
+                        </h3>
+                        <a href="/website/credit/form" class="btn btn-primary rounded-3">Back to form</a>
+                    </div>
+                </section>
+            </t>
+        </template>
+
+        <record id="menu_credit_form" model="website.menu">
+            <field name="name">Credit</field>
+            <field name="url">/website/credit/view</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">90</field>
+        </record>
+    </data>
+</odoo>

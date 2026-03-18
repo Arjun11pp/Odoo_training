@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_report_subscription" model="ir.actions.report">
+        <field name="name">Subscription report</field>
+        <field name="model">subscription.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">recurring_subscription.report_subscription</field>
+        <field name="report_file">recurring_subscription.report_subscription</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

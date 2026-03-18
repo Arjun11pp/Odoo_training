@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_sale_order_form_inherit_field" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.custom.field</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+              <xpath expr="//button[@name='action_quotation_send']" position="attributes">
+            <attribute name="invisible">
+                amount_total >= 25000 and  state in['draft', 'sent','user1']
+            </attribute>
+        </xpath>
+
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button type="object" string="Approve"
+                        class="oe_highlight" invisible="amount_total &lt;= 25000 or state not in  ['draft'] " name="action_approve1" groups="spotter_sale_order_approval.group_sale_order_user1"/>
+                <button type="object" string="Approve 2"
+                        class="oe_highlight" invisible="amount_total &lt;= 25000 or  state not in ['user1'] " name="action_approve2" groups="spotter_sale_order_approval.group_sale_order_user2" />
+
+            </xpath>
+        </field>
+    </record>
+</odoo>
