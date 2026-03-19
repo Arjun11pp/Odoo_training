@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
-       <t t-name="systray_icon" owl="1">
-       <div>
-           <i class="fa fa-cloud"
-               title="My Custom Icon"
-               style="cursor: pointer; font-size: 20px; color:white;margin-top: 10px;"
-               t-on-click="showNotification"/>
-       </div>
+   <t t-name="systray_dropdown" owl="1">
+       <Dropdown>
+              <div class="new_icon">
+                  <div class="icon_div">
+                      <div class="toggle-icon" role="button">
+
+                            <i id='weather'
+                             class="fa fa-cloud"
+                             style="color: white; margin-bottom:10px; padding:13px;"
+                             role="img" t-on-click="showNotification"/>
+                      </div>
+                  </div>
+              </div>
+           <t t-set-slot="content">
+               <DropdownItem><div style="height: 200px;width:200px">
+                   Weather details <i id='settings_icon' style="float:right;"
+                             class="fa fa-gear" t-on-click="" />
+                    <t t-esc="state.data.name"/><br/>
+                    <t t-esc="state.data.weather[{main}]"/>
+
+                        </div>
+               </DropdownItem>
+<!--               <DropdownItem><div style="height: 100px;">-->
+<!--                  Enter  Weather details-->
+<!--                   <i id='settings_icon' class="fa fa-gear" t-on-click="showNotification" />-->
+<!--                    <form>-->
+<!--                        <label for="place">Enter the place name </label>-->
+<!--                        <input type="text" name="city"/>-->
+<!--                    </form>-->
+
+<!--                        </div>-->
+<!--               </DropdownItem>-->
+           </t>
+       </Dropdown>
    </t>
 </templates>
