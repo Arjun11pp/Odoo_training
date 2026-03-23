@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_api_configuration_form" model="ir.ui.view">
+        <field name="name">res.config.settings.weather.api.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                        <app data-string="Weather API" string="Weather API" name="api" >
+                    <block title="OpenWeatherMap API">
+                        <setting help="Define recurring plans and revenues on Opportunities">
+                            <div class="text-muted">
+                                Enter the API key of OpenWeatherMap
+                            </div>
+                            <div class="content-group mt16" >
+                                <field name="weather_api_key"/>
+                        </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

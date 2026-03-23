@@ -5,33 +5,41 @@
               <div class="new_icon">
                   <div class="icon_div">
                       <div class="toggle-icon" role="button">
-
-                            <i id='weather'
-                             class="fa fa-cloud"
-                             style="color: white; margin-bottom:10px; padding:13px;"
-                             role="img" t-on-click="showNotification"/>
+                            <i id='weather' class="fa fa-cloud" style="color: white; margin-bottom:10px; padding:13px;"
+                               role="img" t-on-click="showNotification"/>
                       </div>
                   </div>
               </div>
+
            <t t-set-slot="content">
-               <DropdownItem><div style="height: 200px;width:200px">
-                   Weather details <i id='settings_icon' style="float:right;"
-                             class="fa fa-gear" t-on-click="" />
-                    <t t-esc="state.data.name"/><br/>
-                    <t t-esc="state.data.weather[{main}]"/>
-
-                        </div>
+               <DropdownItem><t t-if="state.has_value"><div style="height: 300px;width:400px">
+                    <i id='settings_icon' style="float:right;padding-left:10px;"
+                       class="fa fa-gear" t-on-click="_onClickSettngs"/>  <i class="fa fa-close" style="float:right;"/><br/>
+                  <h5> <t t-esc="state.date"/>
+                      <br/></h5>
+                   <br/>Day
+                   <t t-esc="state.temp.temp_max"/><sup> o</sup>  <i class="fa fa-arrow-up"/> ,Night
+                   <t t-esc="state.temp.temp_min"/><sup> o</sup>  <i class="fa fa-arrow-down"/> <br/>
+                    <br/>
+                   <h3><t t-esc="state.temp.temp"/>
+                       <sup> o</sup> Celsius
+                       <img id="weather-icon"
+                            t-attf-src="https://openweathermap.org/payload/api/media/file/{{ state.icon }}.png"
+                            alt="Weather Icon" style="float:right;"/>
+                       <br/>
+                       <t t-esc="state.weather"/>
+                       in
+                       <t t-esc="state.data.name"/>
+                       <br/>
+                   </h3><br/>
+                   Feels like : <t t-esc="state.temp.feels_like"/><br/>
+                   <br/> last update : <br/><t t-esc="state.curr_datetime"/>
+                        </div></t>
+                   <t t-else="">
+              <div> Please enter the api key <i id='settings_icon' style="float:right;padding-left:10px;"
+                                                class="fa fa-gear" t-on-click="_onClickSettngs"/></div>
+           </t>
                </DropdownItem>
-<!--               <DropdownItem><div style="height: 100px;">-->
-<!--                  Enter  Weather details-->
-<!--                   <i id='settings_icon' class="fa fa-gear" t-on-click="showNotification" />-->
-<!--                    <form>-->
-<!--                        <label for="place">Enter the place name </label>-->
-<!--                        <input type="text" name="city"/>-->
-<!--                    </form>-->
-
-<!--                        </div>-->
-<!--               </DropdownItem>-->
            </t>
        </Dropdown>
    </t>
