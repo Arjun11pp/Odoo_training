@@ -53,7 +53,6 @@ class SystrayIcon extends Component {
             type: 'ir.actions.act_window',
             res_model: 'res.config.settings',
             context:{ module :'api'},
-
             views: [[false, 'form']],
             target: 'current',
 

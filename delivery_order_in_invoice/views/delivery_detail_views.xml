@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+<record id="account_invoice_delivery" model="ir.ui.view">
+        <field name="name">account.move.delivery</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button class="oe_stat_button" type="object" icon="fa-truck"
+                               name="action_get_delivery_details"  string="Count"><field name="shipment_count" readonly="1"/>
+                            <span style="white-space: pre;">  Shipment</span>
+                        </button>
+            </xpath>
+        </field>
+    </record>
+    <record id="account_invoice_shipment_status" model="ir.ui.view">
+        <field name="name">account.move.delivery.status</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='other_tab']/group" position="inside">
+               <group> <field name="shipment_status"/></group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

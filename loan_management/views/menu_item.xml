@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="loan_management_menu" name="Loan Management" sequence="1"/>
+<!--    Sub menus-->
+        <menuitem id="loan_management_submenu" name="Loan "  parent="loan_management_menu" sequence="1" action="action_loan_management" />
+        <menuitem id="loan_management_line_submenu" name="Loan lines"  parent="loan_management_menu" sequence="2" action="action_loan_management_line" />
+</odoo>
