@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_timer_configuration_form" model="ir.ui.view">
+        <field name="name">survey.survey.quiz.timer</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='scoring']" position="inside">
+                    <label for="idle_timer" string="Survey idle Limit" />
+                   <div> <field name="idle_timer"  class="oe_inline"/> Seconds</div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

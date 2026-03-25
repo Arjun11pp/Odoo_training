@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="survey_fill_time_limit" inherit_id="survey.survey_fill_header">
+            <xpath expr="//div[hasclass('o_survey_timer')]" position="before">
+
+              <div class="o_survey_idle_timer col-lg-2 pt-4">
+                            <h1 class="o_survey_idle_timer_container timer text-end"/>dfgh
+                        </div>
+            </xpath>
+
+        </template>
+    </data>
+</odoo>
