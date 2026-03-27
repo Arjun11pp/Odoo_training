@@ -80,7 +80,7 @@ class EmployeeLoan(models.Model):
     def action_create_installment(self):
         print('123')
         for record in self:
-            count=record.installment_count
+            count=int(record.installment_count)
             # print('count',count)
             for rec in range(count):
                 self.env['employee.loan.line'].create({
