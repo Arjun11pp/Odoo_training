@@ -14,7 +14,9 @@
     'assets': {
         'web.assets_frontend': [
             'quiz_idle_timer/static/src/js/idle_timer.js',
-
+        ],
+        'survey.survey_assets': [
+            'quiz_idle_timer/static/src/js/timer_reload.js'
         ],
     },
     'author': 'Cybrosys',
