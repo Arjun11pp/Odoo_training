@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_user,fleet.user,fleet_service.model_fleet_service_order,base.group_user,1,1,1,1
+access_user2,fleet.user,fleet_service.model_fleet_service_order_part,base.group_user,1,1,1,1
+access_user3,fleet.user,fleet_service.model_fleet_service_order_checklist,base.group_user,1,1,1,1
+access_user4,fleet.user,fleet_service.model_checklist_type,base.group_user,1,1,1,1

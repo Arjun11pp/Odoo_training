@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_stock_picking_form_inherit_field" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+<!--                <xpath expr="//button[hasclass('btn-primary')]" position="attributes">-->
+<xpath expr="//button[hasclass('o_btn_validate')]" position="attributes">
+                     <attribute name="invisible">
+                state not in ['approval','done','assigned']
+            </attribute>
+        </xpath>
+  <xpath expr="//button[@name='button_validate']" position="attributes">
+                     <attribute name="invisible">
+                state in ['approval','done','draft','confirmed']
+            </attribute>
+        </xpath>
+            <xpath expr="//button[@name='button_validate']" position="after">
+                <button type="object" string="Approve"
+                        class="oe_highlight"  name="action_approve_transfer" invisible="state != 'approval'" groups="internal_transfer_validation.group_stock_picking_user"/>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

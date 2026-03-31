@@ -4,7 +4,7 @@
     "version": "1.0",
     "description": """Loan management app""",
     "sequence": "2",
-    "depends": ["base", "sale","purchase" ,"hr"],
+    "depends": ["base","sale_management","purchase" ,"hr"],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',

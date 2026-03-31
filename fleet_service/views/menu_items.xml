@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="fleet_service_menu" name="Fleet Service" sequence="1"/>
+<!--    Sub menus-->
+        <menuitem id="fleet_service_submenu" name="Fleet Service "  parent="fleet_service_menu" sequence="1" action="action_fleet_service" />
+
+</odoo>
