@@ -30,7 +30,6 @@ class SaleOrder(models.Model):
             print(f"Product : {key}, Quantity: {value}")
         lar=max(p_list.values())
         small=min(p_list.values())
-        # print('max', lar)
         for key, value in p_list.items():
             if value==lar:
                 print(f"Top selling Product : {key}, Quantity: {value}")

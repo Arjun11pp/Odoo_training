@@ -14,11 +14,12 @@ class FleetServiceOrder(models.Model):
     state=fields.Selection([('draft','Draft'),('confirmed','Confirmed'),('progress','In progress'),('done','Done'),('cancel','Cancelled')],default='draft')
     part_ids=fields.One2many('fleet.service.order.part','order_id',string='Part IDs')
     checklist_ids=fields.One2many('fleet.service.order.checklist','order_id',string='Checklist IDs')
-    parts_total=fields.Float('Total Parts',compute='_compute_total')
+    parts_total=fields.Float('Total Parts',compute='_compute_total',store=True)
     labour_cost=fields.Float('Labour Cost')
-    grand_total=fields.Float('Grand Total',compute='_compute_grand_total')
-    check_list_progress=fields.Float('Checklist Progress',compute='_compute_check_list_progress',default=0.0)
+    grand_total=fields.Float('Grand Total',compute='_compute_grand_total',store=True)
+    check_list_progress=fields.Float('Checklist Progress',compute='_compute_check_list_progress',default=0.0,store=True)
     type_ids=fields.Many2many('checklist.type',string='Type')
+    employee_vehicle_ids=fields.Many2many('fleet.vehicle', related='technician_id.vehicle_ids')
 
     @api.model_create_multi
     def create(self, vals):
@@ -27,20 +28,19 @@ class FleetServiceOrder(models.Model):
                 val['name'] = self.env['ir.sequence'].next_by_code('fleet.service.order')
         return super().create(vals)
 
-
+    @api.depends('part_ids')
     def _compute_total(self):
         total = 0
         for order in self.part_ids:
-
             total+=order.quantity*order.unit_price
         self.write({'parts_total':total})
 
-
+    @api.depends('parts_total','labour_cost')
     def _compute_grand_total(self):
         g_total=self.parts_total+self.labour_cost
         self.write({'grand_total':g_total})
 
-
+    @api.depends('checklist_ids')
     def _compute_check_list_progress(self):
         final=0
         for order in self:
@@ -72,11 +72,14 @@ class FleetServiceOrder(models.Model):
     def action_fleet_service_generate(self):
         for order in self:
             if order.checklist_ids:
-                return {
-                    'warning': {
-                        'title':'already checklist exists',
-                        'message': 'already checklist exists'
-                    }
+                return { 'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'type': 'warning',
+                    'title': _('checklist already  exists!'),
+                    'message': _("checklist already  exists "),
+                    'sticky': False,
+                        }
                 }
             else:
                 for doc in order.type_ids:

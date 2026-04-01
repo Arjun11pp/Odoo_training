@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_sale_order_form_inherit_field" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.custom.field</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+              <xpath expr="//notebook/page[@name='customer_signature']" position="after">
+                  <page string="Delivery Info"><group>
+                    <field name="delivery_remark"/>
+                    <field name="is_urgent_delivery"/>
+                    <field name="preferred_delivery_time" invisible="is_urgent_delivery == False"/>
+                      <field name="discount_approved"/>
+                      <field name="discount_approved_by"/>
+                      </group>
+                  </page>
+        </xpath>
+        <xpath expr="//button[@name='action_cancel']" position="after">
+            <button name="action_sale_order_discount" type="object" string="Approve Discount" class="oe_highlight"
+                     invisible="discount_approved == True  or state == 'cancel'"   />
+        </xpath>
+
+        </field>
+    </record>
+</odoo>

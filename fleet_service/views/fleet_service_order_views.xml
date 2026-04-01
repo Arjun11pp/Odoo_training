@@ -40,8 +40,8 @@
 
                     <group>
                         <field name="name"/>
-                <field name="vehicle_id"/>
-                <field name="technician_id"/>
+                <field name="technician_id" domain="[('is_available_technician','=',True)]"/>
+                <field name="vehicle_id"  domain="[('service_blocked','=',False),('id','in', employee_vehicle_ids)]"/>
                 <field name="service_date"/>
                 <field name="parts_total"/>
                 <field name="labour_cost"/>
