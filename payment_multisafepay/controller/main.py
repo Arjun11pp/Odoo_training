@@ -10,7 +10,7 @@ import pprint
 _logger = get_payment_logger(__name__)
 
 class MultisafepayController(http.Controller):
-    _return_url = '/payment/multisafepay/return'
+    _return_url = '/payment/multisafepay/redirect'
     _webhook_url = '/payment/multisafepay/webhook'
 
     @http.route(_return_url, type='http', auth='public', methods=['POST'], csrf=False, save_session=False)
@@ -28,6 +28,7 @@ class MultisafepayController(http.Controller):
         :param dict data: The payment data (only `id`) and the transaction reference (`ref`)
                           embedded in the return URL.
         """
+        print("checkout")
         _logger.info("handling redirection from Mollie with data:\n%s", pprint.pformat(data))
         self._verify_and_process(data)
         return request.redirect('/payment/status')
@@ -41,6 +42,7 @@ class MultisafepayController(http.Controller):
         :return: An empty string to acknowledge the notification
         :rtype: str
         """
+        print("webhook")
         _logger.info("notification received from multisafepay with data:\n%s", pprint.pformat(data))
         self._verify_and_process(data)
         return ''  # Acknowledge the notification
@@ -52,6 +54,7 @@ class MultisafepayController(http.Controller):
         :param dict data: The payment data.
         :return: None
         """
+        print("verify")
         tx_sudo = request.env['payment.transaction'].sudo()._search_by_reference('multisafepay', data)
         if not tx_sudo:
             return
