@@ -6,5 +6,5 @@
         <field name="name">multisafepay</field>
         <field name="redirect_form_view_id" ref="redirect_form"/>
     </record>
-
 </odoo>
+
