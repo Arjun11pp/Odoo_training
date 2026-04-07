@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models,_
+from odoo import api,  models,_
 from odoo.addons.payment import utils as payment_utils
 
 from werkzeug.urls import url_decode, url_parse
@@ -20,10 +20,8 @@ class PaymentTransaction(models.Model):
         :return: The dict of provider-specific rendering values
         :rtype: dict
         """
-        print('rendering')
         if self.provider_code != 'multisafepay':
             return super()._get_specific_rendering_values(processing_values)
-
         payload = self._multisafepay_prepare_payment_request_payload()
         try:
             payment_data = self._send_api_request('POST', '/json/orders', json=payload)
@@ -32,7 +30,6 @@ class PaymentTransaction(models.Model):
             return {}
         order_data= payment_data.get('data',payment_data)
         self.provider_reference = payment_data.get('order_id',self.reference)
-        # print("1111", payment_data)
         payment_url=order_data.get('payment_url','')
         return {'api_url': payment_url, 'url_params': {}}
 
@@ -74,19 +71,16 @@ class PaymentTransaction(models.Model):
     @api.model
     def _extract_reference(self, provider_code, payment_data):
         """Override of `payment` to extract the reference from the payment data."""
-        print('reference')
         if provider_code != 'multisafepay':
             return super()._extract_reference(provider_code, payment_data)
         return payment_data.get('ref')
 
     def _extract_amount_data(self, payment_data):
         """Override of `payment` to extract the amount and currency from the payment data."""
-        print('extract')
         if self.provider_code != 'multisafepay':
             return super()._extract_amount_data(payment_data)
         amount_data = payment_data.get('data', {})
         amount = amount_data.get('amount')/100
-        print('amount',amount_data,'22',amount)
         currency_code = amount_data.get('currency')
         return {
             'amount': float(amount),
@@ -97,9 +91,7 @@ class PaymentTransaction(models.Model):
         """Override of `payment` to update the transaction based on the payment data."""
         if self.provider_code != 'multisafepay':
             return super()._apply_updates(payment_data)
-        print('apply',payment_data)
         payment_status = payment_data.get('success')
-        print('payment_status',payment_status)
         if payment_status == False:
 
             self._set_canceled(_("Cancelled payment with status: %s", payment_status))

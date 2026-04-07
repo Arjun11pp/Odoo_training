@@ -6,7 +6,6 @@ from odoo.addons.payment.logging import get_payment_logger
 from odoo.exceptions import ValidationError
 import pprint
 
-
 _logger = get_payment_logger(__name__)
 
 class MultisafepayController(http.Controller):
@@ -22,10 +21,8 @@ class MultisafepayController(http.Controller):
         implement the recommended default `SameSite=Lax` behavior will not include the cookie in the redirection request from the payment
         provider to Odoo. As the redirection to the '/payment/status' page will satisfy any specification of the `SameSite` attribute,the
         session of the user will be retrieved and with it the transaction which will be immediately post-processed.
-        :param dict data: The payment data (only `id`) and the transaction reference (`ref`)
-                          embedded in the return URL.
+        :param dict data: The payment data (only `id`) and the transaction reference (`ref`) embedded in the return URL.
         """
-        print("checkout")
         _logger.info("handling redirection from Multisafepay with data:\n%s", pprint.pformat(data))
         self._verify_and_process(data)
         return request.redirect('/payment/status')
@@ -38,7 +35,6 @@ class MultisafepayController(http.Controller):
         :return: An empty string to acknowledge the notification
         :rtype: str
         """
-        print("webhook")
         _logger.info("notification received from multisafepay with data:\n%s", pprint.pformat(data))
         self._verify_and_process(data)
         return ''  # Acknowledge the notification
@@ -46,20 +42,15 @@ class MultisafepayController(http.Controller):
     @staticmethod
     def _verify_and_process(data):
         """Verify and process the payment data sent by Multisafepay.
-
         :param dict data: The payment data.
         :return: None
         """
-        print("verify")
         tx_sudo = request.env['payment.transaction'].sudo()._search_by_reference('multisafepay', data)
         if not tx_sudo:
             return
-
         try:
             verified_data = tx_sudo._send_api_request(
-                'GET', f'/json/orders/{tx_sudo.provider_reference}'
-            )
-            print('verified_data', verified_data)
+                'GET', f'/json/orders/{tx_sudo.provider_reference}')
         except ValidationError:
             _logger.error("Unable to process the payment data")
         else:

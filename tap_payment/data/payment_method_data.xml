@@ -1,8 +1,8 @@
  <odoo noupdate="1">
 
-    <record id="multisafepay_card" model="payment.method">
-        <field name="name">Multisafepay card</field>
-        <field name="code">multisafepay</field>
+    <record id="tap_card" model="payment.method">
+        <field name="name">Tap card</field>
+        <field name="code">tap</field>
         <field name="sequence">1001</field>
         <field name="image" type="base64" file="delivery/static/src/img/payment_provider_cash_on_delivery.png"/>
         <field name="support_tokenization">False</field>

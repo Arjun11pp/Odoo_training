@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_payment_method_view_form_inherit_pos_tap" model="ir.ui.view">
+        <field name="name">pos.payment.method.form.inherit.tap</field>
+        <field name="model">pos.payment.method</field>
+        <field name="inherit_id" ref="point_of_sale.pos_payment_method_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='use_payment_terminal']" position="after">
+                <field name="tap_payment_provider_id" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>
+<!--                <field name="tap_terminal_id" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>-->
+<!--                <field name="tap_api_key" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>-->
+            </xpath>
+        </field>
+    </record>
+</odoo>
