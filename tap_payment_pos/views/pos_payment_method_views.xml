@@ -7,8 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='use_payment_terminal']" position="after">
                 <field name="tap_payment_provider_id" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>
-<!--                <field name="tap_terminal_id" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>-->
-<!--                <field name="tap_api_key" invisible="use_payment_terminal != 'tap'" required="use_payment_terminal == 'tap'"/>-->
+
             </xpath>
         </field>
     </record>

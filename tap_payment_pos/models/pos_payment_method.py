@@ -35,9 +35,8 @@ class PosPaymentMethod(models.Model):
 
     def tap_create_payment(self, amount: float, payment_uuid: str, pos_session_id: int):
         self.ensure_one()
-        print('create payment')
-        user_lang = self.env.context.get("lang")
         currency = self.journal_id.currency_id or self.company_id.currency_id
+        formatted_amount = f"{amount:.3f}"
         payload = {
             "payment_uuid": payment_uuid,
             "payment_method_id": self.id,
@@ -45,33 +44,70 @@ class PosPaymentMethod(models.Model):
         }
         signed_payload = hash_sign(self.sudo().env, "pos_tap", payload, expiration_hours=27)  # Tap webhooks can retry for up to 26 hours
         payment_request = {
-            
-            # "locale": user_lang if user_lang in const.SUPPORTED_LOCALES else "en_US",
-            "due": 1672235072000,
-            "expiry": 1672235072000,
+            # "due": 1775704438000,
+            # "expiry": 1775704438000,
+            # "mode": "INVOICE",
+            # "customer": {
+            #     "first_name": "test",
+            #     "last_name": "test",  },
+            # "order": {
+            #     "amount": final_amount,
+            #     # "amount": 10.599,
+            #     "currency": currency.name,
+            #     "items": [ {
+            #             # "amount":  f"{amount:.{currency.decimal_places}f}",
+            #             "amount": final_amount,
+            #             "description": "test",
+            #             "image": "",
+            #             "name": "iPhone",
+            #             "quantity": 1,
+            #             "currency": currency.name
+            #         }     ], },
+            # "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
+            # "redirect": {'url': f"{self.get_base_url()}"},
+            # "post": {"url": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
+            "draft": False,
+            "due": 1775704438000,
+            "expiry": 1775704438000,
+            "description": "test invoice",
             "mode": "INVOICE",
+            "currencies": [currency.name],
             "customer": {
                 "first_name": "test",
                 "last_name": "test",
-                "email": "test@test.com",
+                "email": "test@gmail.com",
                 "phone": {
                     "country_code": 965,
                     "number": 51234567
                 }
             },
             "order": {
-                "amount": f"{amount:.{currency.decimal_places}f}",
-                "currency": currency.name
-            },
-            "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
-            # "redirectUrl": f"{self.get_base_url()}",
-            "redirect": {'url': f"{self.get_base_url()}"},
+                "amount": formatted_amount,
+                "currency": currency.name,
+                "items": [ {
+                            "amount": formatted_amount,
+                            "description": "test",
+                            "name": "iPhone",
+                            "quantity": 1,
+                            "currency": currency.name
+                            } ],
+                "tax": [ {
+                            "description": "test",
+                            "name": "VAT",
+                            "rate": {
+                                "type": "F",
+                                "value": 0
+                            } }
+                ] },
             "post": {"url": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
-            # "webhookUrl": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}",
-            # "method": "pointofsale",
-
+            "redirect": {"url":  f"{self.get_base_url()}"},
+            "retry_for_captured": True,
+            "reference": {
+                "invoice": self.id,
+            },
+            "statement_descriptor": "test"
         }
-        return self.tap_payment_provider_id._send_api_request("POST", "/payments", json=payment_request)
+        return self.tap_payment_provider_id._send_api_request("POST", "/invoices", json=payment_request)
 
     def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):
         print('create refund')

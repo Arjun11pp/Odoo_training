@@ -22,13 +22,12 @@ class PaymentProvider(models.Model):
         """Override of `payment` to build the request URL."""
         if self.code != 'tap':
             return super()._build_request_url(endpoint, **kwargs)
-        url= 'https://api.tap.company/v2/invoices'
+        url= 'https://api.tap.company/v2'
         clean_endpoint=endpoint.strip('/')
         return f'{url}/{clean_endpoint}'
 
     def _build_request_headers(self, *args, **kwargs):
         """Override of `payment` to build the request headers."""
-        print('header',self.tap_api_key)
         if self.code != 'tap':
             return super()._build_request_headers(*args, **kwargs)
         return {

@@ -6,7 +6,7 @@
     'category': 'Sales/Point of Sale',
     'sequence': 6,
     'summary': 'Integrate your POS with a Tap payment terminal',
-    'depends': ['point_of_sale', 'payment_mollie'],
+    'depends': ['point_of_sale', 'tap_payment'],
     'installable': True,
     'data': [
         'views/pos_payment_method_views.xml',

@@ -3,7 +3,7 @@ import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { PaymentInterface } from "@point_of_sale/app/utils/payment/payment_interface";
 import { register_payment_method } from "@point_of_sale/app/services/pos_store";
-console.log('321')
+
 export class PaymentTap extends PaymentInterface {
     setup() {
         super.setup(...arguments);
@@ -49,14 +49,19 @@ export class PaymentTap extends PaymentInterface {
                 paymentLine.uuid,
                 this.pos.session.id,
             ]);
-            if (!["open", "pending"].includes(data.status)) {
+            console.log(data)
+            if (["CREATED"].includes(data.status)) {
+                console.log('true',data.url)
+            }
+
+            if (!["CREATED"].includes(data.status)) {
                 this._showTapError(_t("Failed to initiate payment: %s", data.status));
                 return false;
             }
 
-            // In test mode, the terminal is simulated using a popup
-            if (data._links.changePaymentState) {
-                browser.open(data._links.changePaymentState.href, "_blank");
+            // In test mode, the redirect is simulated using a popup
+            if (data.url) {
+                browser.open(data.url, "_blank");
             }
 
             paymentLine.transaction_id = data.id;
@@ -64,9 +69,10 @@ export class PaymentTap extends PaymentInterface {
 
             const { promise, resolve } = Promise.withResolvers();
             this.paymentLineResolvers[paymentLine.uuid] = resolve;
-
+            console.log('promise',promise)
             return promise;
         } catch (error) {
+            console.log('catch')
             this._showTapError(error);
             return false;
         }
