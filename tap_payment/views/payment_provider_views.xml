@@ -8,9 +8,7 @@
         <field name="arch" type="xml">
             <group name="provider_credentials" position='inside'>
                 <group invisible="code != 'tap'">
-                    <field name="tap_api_key"
-                           string="Api key"
-                           required="code == 'tap' "/>
+                    <field name="tap_api_key" string="Api key" required="code == 'tap' "/>
                 </group>
             </group>
         </field>

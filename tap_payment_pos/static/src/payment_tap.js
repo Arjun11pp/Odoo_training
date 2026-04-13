@@ -20,10 +20,8 @@ export class PaymentTap extends PaymentInterface {
                 );
                 return false;
             }
-
             return this._createTapRefund(paymentLine, originalPaymentId);
         }
-
         return this._createTapPayment(paymentLine);
     }
 
@@ -45,28 +43,20 @@ export class PaymentTap extends PaymentInterface {
         try {
             const data = await this.pos.data.call("pos.payment.method", "tap_create_payment", [
                 this.payment_method_id.id,
-                paymentLine.amount,
-                paymentLine.uuid,
+                paymentLine.amount, paymentLine.uuid,
                 this.pos.session.id,
             ]);
             console.log(data)
-            if (["CREATED"].includes(data.status)) {
-                console.log('true',data.url)
-            }
-
             if (!["CREATED"].includes(data.status)) {
                 this._showTapError(_t("Failed to initiate payment: %s", data.status));
                 return false;
             }
-
-            // In test mode, the redirect is simulated using a popup
             if (data.url) {
                 browser.open(data.url, "_blank");
+                // redirect(data.url.href);
             }
-
             paymentLine.transaction_id = data.id;
             await this.pos.data.synchronizeLocalDataInIndexedDB();
-
             const { promise, resolve } = Promise.withResolvers();
             this.paymentLineResolvers[paymentLine.uuid] = resolve;
             console.log('promise',promise)
@@ -79,6 +69,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     async _createTapRefund(refundPaymentLine, originalPaymentId) {
+         console.log('_createTapRefund')
         try {
             const data = await this.pos.data.call("pos.payment.method", "tap_create_refund", [
                 this.payment_method_id.id,
@@ -101,6 +92,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     _findOriginalPaymentId(refundPaymentLine) {
+         console.log('_findOriginalPaymentId')
         const currentOrder = refundPaymentLine.pos_order_id;
         const orderToRefund = currentOrder.lines[0]?.refunded_orderline_id?.order_id;
         if (!orderToRefund) {
@@ -117,6 +109,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     handleTapStatusResponse(paymentLine, notification) {
+        console.log('status',paymentLine,notification)
         const isSuccessful = notification.status === "paid";
 
         if (isSuccessful) {

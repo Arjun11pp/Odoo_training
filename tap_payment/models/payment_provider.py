@@ -9,14 +9,11 @@ class PaymentProvider(models.Model):
     tap_api_key=fields.Char(string='API Key', copy=False,required=True)
 
     def _get_default_payment_method_codes(self):
-        print('code')
         """ Override of `payment` to return the default payment method codes. """
         self.ensure_one()
         if self.code != 'tap':
             return super()._get_default_payment_method_codes()
         return {'tap'}
-
-        # === REQUEST HELPERS === #
 
     def _build_request_url(self, endpoint, **kwargs):
         """Override of `payment` to build the request URL."""

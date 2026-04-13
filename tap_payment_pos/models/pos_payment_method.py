@@ -2,23 +2,15 @@
 
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
-# from odoo.addons.payment_mollie import const
-
+from dateutil.utils import today
 from odoo.tools import hash_sign
-
 
 class PosPaymentMethod(models.Model):
     _inherit = "pos.payment.method"
 
-    # code = fields.Selection(selection_add=[('tap', 'Tap Payment Provider')],
-    #                         ondelete={'tap': 'set default'})
-    # tap_api_key = fields.Char(string='API Key', copy=False, required=True)
-
     def _get_payment_terminal_selection(self):
         return super()._get_payment_terminal_selection() + [("tap", "Tap")]
 
-
-    # tap_terminal_id = fields.Char("Tap Terminal ID", copy=False)
     tap_payment_provider_id = fields.Many2one("payment.provider", domain=[("code", "=", "tap")])
 
     @api.constrains('tap_payment_provider_id')
@@ -43,32 +35,15 @@ class PosPaymentMethod(models.Model):
             "pos_session_id": pos_session_id,
         }
         signed_payload = hash_sign(self.sudo().env, "pos_tap", payload, expiration_hours=27)  # Tap webhooks can retry for up to 26 hours
+        print('id',self.id)
+        print('session',pos_session_id)
+        print('payment',payment_uuid)
+        dt=fields.Datetime.add(today(), days=2)
+        millis = int(dt.timestamp() * 1000)
         payment_request = {
-            # "due": 1775704438000,
-            # "expiry": 1775704438000,
-            # "mode": "INVOICE",
-            # "customer": {
-            #     "first_name": "test",
-            #     "last_name": "test",  },
-            # "order": {
-            #     "amount": final_amount,
-            #     # "amount": 10.599,
-            #     "currency": currency.name,
-            #     "items": [ {
-            #             # "amount":  f"{amount:.{currency.decimal_places}f}",
-            #             "amount": final_amount,
-            #             "description": "test",
-            #             "image": "",
-            #             "name": "iPhone",
-            #             "quantity": 1,
-            #             "currency": currency.name
-            #         }     ], },
-            # "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
-            # "redirect": {'url': f"{self.get_base_url()}"},
-            # "post": {"url": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
             "draft": False,
-            "due": 1775704438000,
-            "expiry": 1775704438000,
+            "due": millis,
+            "expiry": millis,
             "description": "test invoice",
             "mode": "INVOICE",
             "currencies": [currency.name],
@@ -91,16 +66,11 @@ class PosPaymentMethod(models.Model):
                             "quantity": 1,
                             "currency": currency.name
                             } ],
-                "tax": [ {
-                            "description": "test",
-                            "name": "VAT",
-                            "rate": {
-                                "type": "F",
-                                "value": 0
-                            } }
-                ] },
+               },
+            # "post": {"url": f"{self.get_base_url()}/pos_tap/webhook"},
             "post": {"url": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
-            "redirect": {"url":  f"{self.get_base_url()}"},
+            # "redirect": {"url":  f"{self.get_base_url()}/odoo/point-of-sale/{pos_session_id}"},
+            # "redirect": {"url":  f"{self.get_base_url()}/pos/ui/1/receipt"},
             "retry_for_captured": True,
             "reference": {
                 "invoice": self.id,
@@ -112,7 +82,6 @@ class PosPaymentMethod(models.Model):
     def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):
         print('create refund')
         self.ensure_one()
-
         currency = self.journal_id.currency_id or self.company_id.currency_id
         payment_request = {
             "amount": {
@@ -124,6 +93,7 @@ class PosPaymentMethod(models.Model):
         return self.tap_payment_provider_id._send_api_request("POST", f"/payments/{original_payment_id}/refunds", json=payment_request)
 
     def tap_cancel_payment(self, payment_id: str):
+        print('cancel payment')
         self.ensure_one()
         return self.tap_payment_provider_id._send_api_request("DELETE", f"/payments/{payment_id}")
 
