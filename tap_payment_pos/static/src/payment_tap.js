@@ -110,7 +110,7 @@ export class PaymentTap extends PaymentInterface {
 
     handleTapStatusResponse(paymentLine, notification) {
         console.log('status',paymentLine,notification)
-        const isSuccessful = notification.status === "paid";
+        const isSuccessful = notification.status === "PAID";
 
         if (isSuccessful) {
             paymentLine.card_no = notification.card_no;

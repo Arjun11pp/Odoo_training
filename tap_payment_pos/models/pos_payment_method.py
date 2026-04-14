@@ -34,10 +34,8 @@ class PosPaymentMethod(models.Model):
             "payment_method_id": self.id,
             "pos_session_id": pos_session_id,
         }
+        print('uuid',payment_uuid,self.id,pos_session_id)
         signed_payload = hash_sign(self.sudo().env, "pos_tap", payload, expiration_hours=27)  # Tap webhooks can retry for up to 26 hours
-        print('id',self.id)
-        print('session',pos_session_id)
-        print('payment',payment_uuid)
         dt=fields.Datetime.add(today(), days=2)
         millis = int(dt.timestamp() * 1000)
         payment_request = {
@@ -68,9 +66,10 @@ class PosPaymentMethod(models.Model):
                             } ],
                },
             # "post": {"url": f"{self.get_base_url()}/pos_tap/webhook"},
-            "post": {"url": f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
-            # "redirect": {"url":  f"{self.get_base_url()}/odoo/point-of-sale/{pos_session_id}"},
-            # "redirect": {"url":  f"{self.get_base_url()}/pos/ui/1/receipt"},
+            "post":{'url': f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
+
+            "redirect": {"url":  f"{self.get_base_url()}/pos/ui/1/receipt/"},
+
             "retry_for_captured": True,
             "reference": {
                 "invoice": self.id,
@@ -78,26 +77,29 @@ class PosPaymentMethod(models.Model):
             "statement_descriptor": "test"
         }
         return self.tap_payment_provider_id._send_api_request("POST", "/invoices", json=payment_request)
-
-    def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):
-        print('create refund')
-        self.ensure_one()
-        currency = self.journal_id.currency_id or self.company_id.currency_id
-        payment_request = {
-            "amount": {
-                "currency": currency.name,
-                "value": f"{amount:.{currency.decimal_places}f}"
-            },
-            "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
-        }
-        return self.tap_payment_provider_id._send_api_request("POST", f"/payments/{original_payment_id}/refunds", json=payment_request)
+        # response= self.tap_payment_provider_id._send_api_request("POST", "/invoices", json=payment_request)
+        # tap_payment_id=response.get('id')
+        # return response ,tap_payment_id
 
     def tap_cancel_payment(self, payment_id: str):
         print('cancel payment')
         self.ensure_one()
-        return self.tap_payment_provider_id._send_api_request("DELETE", f"/payments/{payment_id}")
+        return self.tap_payment_provider_id._send_api_request("DELETE", f"/invoices/{payment_id}")
 
     def _tap_get_payment(self, payment_id: str):
         print('get payment')
         self.ensure_one()
-        return self.tap_payment_provider_id._send_api_request("GET", f"/payments/{payment_id}")
+        return self.tap_payment_provider_id._send_api_request("GET", f"/invoices/{payment_id}")
+
+    # def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):
+    #     print('create refund')
+    #     self.ensure_one()
+    #     currency = self.journal_id.currency_id or self.company_id.currency_id
+    #     payment_request = {
+    #         "amount": {
+    #             "currency": currency.name,
+    #             "value": f"{amount:.{currency.decimal_places}f}"
+    #         },
+    #         "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
+    #     }
+    #     return self.tap_payment_provider_id._send_api_request("POST", f"/payments/{original_payment_id}/refunds", json=payment_request)

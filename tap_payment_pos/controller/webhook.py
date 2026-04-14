@@ -1,18 +1,27 @@
 # -*- coding: utf-8 -*-
-
+from addons.rpc.controllers import jsonrpc
 from odoo import http
 from odoo.http import request
 from odoo.tools import verify_hash_signed
+import json
 import logging
-
+from werkzeug.wrappers import Request, Response
 _logger = logging.getLogger(__name__)
 
 
 class PosTap(http.Controller):
-    @http.route('/pos_tap/webhook', methods=['POST'], auth='public', type='http', save_session=False, csrf=False)
-    def tap_webhook(self, id, payload):
-        print('webhook"')
-        _logger.info("Received webhook from Tap for payment '%s'", id)
+    @http.route('/pos_tap/webhook', methods=['POST'], auth='public', type='jsonrpc', csrf=False)
+    def tap_webhook(self,**kwargs):
+        print('webhook')
+        # ids=kwargs
+        raw_data = request.httprequest.data
+        data = json.loads(raw_data)
+        # data = json.loads(request.httprequest.data)
+        print(data)
+        payment_id=data.get('id')
+        payload = request.httprequest.args.get('payload')
+        payload2 = request
+        print('payload', payload2)
         payment_method_sudo = request.env["pos.payment.method"].sudo()
         decoded_payload = verify_hash_signed(payment_method_sudo.env, "pos_tap", payload)
         if not decoded_payload:
@@ -28,18 +37,19 @@ class PosTap(http.Controller):
         if not pos_session_sudo:
             _logger.warning("No POS session found matching Tap webhook, ignoring")
             return "OK"
-        payment_info = payment_method_sudo._tap_get_payment(id)
-        payment_details = payment_info["details"]
+        payment_info = payment_method_sudo._tap_get_payment(payment_id)
+        print('payment_info', payment_info)
+        # payment_details = payment_info["details"]
         message = {
             'session_id': int(pos_session_id),
-            'payment_id': id,
+            'payment_id': payment_id,
             'status': payment_info["status"],
         }
-        if message['status'] == "paid":
+        if message['status'] == "PAID":
             message |= {
-                'card_type': payment_details.get("cardFunding"),
-                'card_no': payment_details.get("cardNumber"),
-                'card_brand': payment_details.get("cardLabel"),
+                'object': payment_info.get("object"),
+                # 'card_no': payment_info.get("cardNumber"),
+                # 'card_brand': payment_info.get("cardLabel"),
             }
         elif message['status'] in ['expired', 'failed', 'canceled']:
             message |= {
