@@ -16,7 +16,6 @@ patch(PosStore.prototype, {
                     !paymentLine.isDone()
 
                 ) {
-                    console.log('iffff')
                     paymentLine.payment_method_id.payment_terminal.handleTapStatusResponse(
                         paymentLine,
                         payload

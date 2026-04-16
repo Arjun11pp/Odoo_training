@@ -1,4 +1,4 @@
-import { browser } from "@web/core/browser/browser";
+
 import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { PaymentInterface } from "@point_of_sale/app/utils/payment/payment_interface";
@@ -11,6 +11,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     async sendPaymentRequest(uuid) {
+        console.log('1')
         const paymentLine = this.pos.getOrder().getPaymentlineByUuid(uuid);
         if (paymentLine.amount < 0) {
             const originalPaymentId = this._findOriginalPaymentId(paymentLine);
@@ -27,9 +28,10 @@ export class PaymentTap extends PaymentInterface {
 
     async sendPaymentCancel(order, uuid) {
         const paymentLine = this.pos.getOrder().getPaymentlineByUuid(uuid);
+        console.log('123',this)
         try {
             await this.pos.data.call("pos.payment.method", "tap_cancel_payment", [
-                this.payment_method_id.id,
+                    this.payment_method_id.id,
                 paymentLine.transaction_id,
             ]);
             return true;
@@ -40,7 +42,10 @@ export class PaymentTap extends PaymentInterface {
     }
 
     async _createTapPayment(paymentLine) {
+        console.log('12')
         try {
+            console.log('this',this)
+            console.log('pay',paymentLine)
             const data = await this.pos.data.call("pos.payment.method", "tap_create_payment", [
                 this.payment_method_id.id,
                 paymentLine.amount, paymentLine.uuid,
@@ -52,14 +57,13 @@ export class PaymentTap extends PaymentInterface {
                 return false;
             }
             if (data.url) {
-                browser.open(data.url, "_blank");
-                // redirect(data.url.href);
+                // browser.open(data.url, "_blank");
+
             }
             paymentLine.transaction_id = data.id;
             await this.pos.data.synchronizeLocalDataInIndexedDB();
             const { promise, resolve } = Promise.withResolvers();
             this.paymentLineResolvers[paymentLine.uuid] = resolve;
-            console.log('promise',promise)
             return promise;
         } catch (error) {
             console.log('catch')
@@ -92,6 +96,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     _findOriginalPaymentId(refundPaymentLine) {
+        console.log('13')
          console.log('_findOriginalPaymentId')
         const currentOrder = refundPaymentLine.pos_order_id;
         const orderToRefund = currentOrder.lines[0]?.refunded_orderline_id?.order_id;
@@ -109,6 +114,7 @@ export class PaymentTap extends PaymentInterface {
     }
 
     handleTapStatusResponse(paymentLine, notification) {
+        console.log('14')
         console.log('status',paymentLine,notification)
         const isSuccessful = notification.status === "PAID";
 

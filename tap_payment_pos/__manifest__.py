@@ -14,6 +14,7 @@
     'assets': {
         'point_of_sale._assets_pos': [
             'tap_payment_pos/static/src/**/*',
+            # "tap_payment_pos/static/src/xml/pos_send_button.xml" ,
         ],
     },
     'author': 'Odoo S.A.',

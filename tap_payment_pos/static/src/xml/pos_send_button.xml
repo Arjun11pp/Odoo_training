@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+<t t-name="PaymentScreenButtons" t-inherit="point_of_sale.PaymentScreenPaymentLines"
+   t-inherit-mode="extension">
+<xpath expr="//div[hasclass('paymentlines')]" position="inside"><div>
+<button class="button test button btn btn-light btn-lg d-flex justify-content-between "
+     
+        t-on-click="onClickTest">
+<span><i class="fa fa-file-text-o me-2" />Send</span>
+</button></div>
+</xpath>
+
+</t>
+
+</templates>
