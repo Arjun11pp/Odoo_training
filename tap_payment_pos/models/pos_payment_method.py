@@ -23,7 +23,7 @@ class PosPaymentMethod(models.Model):
                     payment_method.tap_payment_provider_id.name
                 ))
 
-    def tap_create_payment(self, amount: float, payment_uuid: str, pos_session_id: int):
+    def tap_create_payment(self, amount: float, payment_uuid: str, pos_session_id: int):    
         self.ensure_one()
         currency = self.journal_id.currency_id or self.company_id.currency_id
         formatted_amount = f"{amount:.3f}"
@@ -45,12 +45,20 @@ class PosPaymentMethod(models.Model):
             "customer": {
                 "first_name": "test123",
                 "last_name": "test123",
-                "email": "test123@gmail.com",
+                "email": "odootestperson@gmail.com",
                 "phone": {
                     "country_code": 965,
                     "number": 51234467
                 }
             },
+            "notifications": {
+                "channels": ["SMS", "EMAIL"],
+                "dispatch": True
+            },
+            "charge": {"receipt": {
+                "email": True,
+                "sms": True
+            }},
             "order": {
                 "amount": formatted_amount,
                 "currency": currency.name,
@@ -63,13 +71,14 @@ class PosPaymentMethod(models.Model):
                             } ],
                },
             "post":{'url': f"{self.get_base_url()}/pos_tap/webhook?payload={signed_payload}"},
-            "redirect": {"url":  f"{self.get_base_url()}/pos/ui/1/receipt/"},
+            # "redirect": {"url":  f"{self.get_base_url()}/pos/ui/1/receipt/"},
             "retry_for_captured": True,
             "reference": {
                 "invoice": self.id,
             },
             "statement_descriptor": "test"
         }
+        print('self',self.tap_payment_provider_id)
         return self.tap_payment_provider_id._send_api_request("POST", "/invoices", json=payment_request)
 
     def tap_cancel_payment(self, payment_id: str):

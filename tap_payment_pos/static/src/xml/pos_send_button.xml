@@ -2,14 +2,20 @@
 <templates id="template" xml:space="preserve">
 <t t-name="PaymentScreenButtons" t-inherit="point_of_sale.PaymentScreenPaymentLines"
    t-inherit-mode="extension">
-<xpath expr="//div[hasclass('paymentlines')]" position="inside"><div>
-<button class="button test button btn btn-light btn-lg d-flex justify-content-between "
-     
-        t-on-click="onClickTest">
+<xpath expr="//div[hasclass('payment-infos')]" position="inside">
+
+<button class="button test button btn btn-light btn-lg d-flex "
+
+        t-on-click="() => this.onClickTest(this)">
 <span><i class="fa fa-file-text-o me-2" />Send</span>
-</button></div>
+</button><button class="button test button btn btn-light btn-lg d-flex justify-content-between "
+
+        t-on-click="() => this.onClickCheck()">
+<span><i class="fa fa-file-text-o me-2" />check</span>
+</button>
 </xpath>
 
 </t>
 
 </templates>
+<!--  t-if="this.props.paymentLines.payment_method_id.name == 'Tap'"-->

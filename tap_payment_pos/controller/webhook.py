@@ -11,9 +11,11 @@ _logger = logging.getLogger(__name__)
 class PosTap(http.Controller):
     @http.route('/pos_tap/webhook', methods=['POST'], auth='public', type='jsonrpc', csrf=False)
     def tap_webhook(self,**kwargs):
+
         raw_data = request.httprequest.data
         data = json.loads(raw_data)
         payment_id=data.get('id')
+        print('webhook',data)
         payload = request.httprequest.args.get('payload')
         payment_method_sudo = request.env["pos.payment.method"].sudo()
         decoded_payload = verify_hash_signed(payment_method_sudo.env, "pos_tap", payload)
@@ -31,6 +33,7 @@ class PosTap(http.Controller):
             _logger.warning("No POS session found matching Tap webhook, ignoring")
             return "OK"
         payment_info = payment_method_sudo._tap_get_payment(payment_id)
+        print('payment_info', payment_info)
         message = {
             'session_id': int(pos_session_id),
             'payment_id': payment_id,

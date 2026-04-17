@@ -4,22 +4,39 @@ import { PaymentScreenPaymentLines } from "@point_of_sale/app/screens/payment_sc
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { PaymentInterface } from "@point_of_sale/app/utils/payment/payment_interface";
-import {PaymentTap} from "./payment_tap";
+import {useService} from "@web/core/utils/hooks";
+import {useState} from "@odoo/owl";
 
-console.log('123333')
+
 patch(PaymentScreenPaymentLines.prototype, {
-
-onClickTest() {
-
-    console.log("Clicked Test Button",this);
-    this.sendPaymentRequest(this.pos.selectedOrderUuid)
+setup(){
+    super.setup();
+      this.orm = useService('orm');
+    this.state = useState({
+        datas: {},
+    });
 },
-    async sendPaymentRequest(uuid) {
-        console.log('1',this.pos.getOrder().prototype)
+onClickTest(amount) {
+let price=0;
+    console.log("Clicked Test Button",this);
+    console.log("amount",amount.props.paymentLines);
+    // amounts=a
+    amount.props.paymentLines.forEach(line => {
+        if(line.payment_method_id.name === 'Tap'){
+            price=line.amount;
+            console.log('price',price)
+        }
+        console.log('lines',line.payment_method_id)
+    })
+    // console.log('ppp',this.pos.selectedOrder.uuid)
+    // console.log('ppp',this.pos)
+    this.sendPaymentRequest(this.pos.selectedOrder.uuid,price)
+},
+    async sendPaymentRequest(uuid,price) {
+        console.log('1',this.pos.getOrder())
         console.log('2',uuid)
-        const paymentLine = this.pos.getOrder().getPaymentlineByUuid(uuid);
-        console.log('paymentline',paymentLine)
+        // const paymentLine = this.pos.getOrder().getPaymentlineByUuid(uuid);
+        // console.log('paymentline1',paymentLine)
         // if (paymentLine.amount < 0) {
         //     const originalPaymentId = this._findOriginalPaymentId(paymentLine);
         //     if (!originalPaymentId) {
@@ -30,31 +47,41 @@ onClickTest() {
         //     }
         //     return this._createTapRefund(paymentLine, originalPaymentId);
         // }
-        return this._createTapPayment(paymentLine);
+        return this._createTapPayment(uuid,price);
     },
-    async _createTapPayment(paymentLine) {
+    async _createTapPayment(uuid,price) {
         console.log('12')
+        let method_id
         try {
             console.log('this',this)
-            console.log('pay',paymentLine)
+            console.log('pay',this.pos.session.id)
+            // console.log('payment method',this.payment_method_id.id)
+            this.props.paymentLines.forEach(line => {
+        if(line.payment_method_id.name === 'Tap'){
+           method_id=line.payment_method_id.id
+            console.log('price',method_id,uuid,this.pos.session.id)
+        }})
             const data = await this.pos.data.call("pos.payment.method", "tap_create_payment", [
-                this.payment_method_id.id,
-                paymentLine.amount, paymentLine.uuid,
+                method_id,
+               price, uuid,
                 this.pos.session.id,
             ]);
-            console.log(data)
+             this.state.datas=data
+            console.log('ddd',data)
             if (!["CREATED"].includes(data.status)) {
                 this._showTapError(_t("Failed to initiate payment: %s", data.status));
                 return false;
             }
-            if (data.url) {
+            // if (data.url) {
                 // browser.open(data.url, "_blank");
                 // redirect(data.url.href);
-            }
-            paymentLine.transaction_id = data.id;
+            // }
+            // const paymentLine = this.getPaymentlineByUuid(uuid);
+            // console.log('tansac',paymentLine)
+            // paymentLine.transaction_id = data.id;
             await this.pos.data.synchronizeLocalDataInIndexedDB();
             const { promise, resolve } = Promise.withResolvers();
-            this.paymentLineResolvers[paymentLine.uuid] = resolve;
+            // this.paymentLineResolvers[paymentLine.uuid] = resolve;
             return promise;
         } catch (error) {
             console.log('catch')
@@ -76,5 +103,17 @@ onClickTest() {
             return error.data.message;
         }
         return error.message;
+    },
+     onClickCheck(){
+        console.log('check',this)
+        try {
+            this.orm.call("pos.payment.method", "_tap_get_payment", [this.state.datas.id]);
+            // console.log('payyy', pays)
+        }  catch (error) {
+            console.log('catch')
+            this._showTapError(error);
+            return false;
+        }
+
     }
 });
