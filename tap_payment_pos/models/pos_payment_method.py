@@ -85,8 +85,12 @@ class PosPaymentMethod(models.Model):
         self.ensure_one()
         return self.tap_payment_provider_id._send_api_request("DELETE", f"/invoices/{payment_id}")
 
-    def _tap_get_payment(self, payment_id: str):
-        self.ensure_one()
+    def tap_get_payment(self, payment_id: str):
+        print('self',self)
+        # self.ensure_one()
+        print('payment',self.tap_payment_provider_id)
+        for data in  self.tap_payment_provider_id._send_api_request("GET", f"/invoices/{payment_id}"):
+            print(data)
         return self.tap_payment_provider_id._send_api_request("GET", f"/invoices/{payment_id}")
 
     # def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):

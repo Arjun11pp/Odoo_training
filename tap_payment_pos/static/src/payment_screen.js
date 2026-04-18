@@ -5,8 +5,7 @@ import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import {useService} from "@web/core/utils/hooks";
-import {useState} from "@odoo/owl";
-
+import { useState } from "@odoo/owl";
 
 patch(PaymentScreenPaymentLines.prototype, {
 setup(){
@@ -14,13 +13,14 @@ setup(){
       this.orm = useService('orm');
     this.state = useState({
         datas: {},
+        methods: {},
     });
 },
 onClickTest(amount) {
-let price=0;
+    const is_clicked=true
+    let price=0;
     console.log("Clicked Test Button",this);
     console.log("amount",amount.props.paymentLines);
-    // amounts=a
     amount.props.paymentLines.forEach(line => {
         if(line.payment_method_id.name === 'Tap'){
             price=line.amount;
@@ -28,34 +28,20 @@ let price=0;
         }
         console.log('lines',line.payment_method_id)
     })
-    // console.log('ppp',this.pos.selectedOrder.uuid)
-    // console.log('ppp',this.pos)
     this.sendPaymentRequest(this.pos.selectedOrder.uuid,price)
+
 },
     async sendPaymentRequest(uuid,price) {
         console.log('1',this.pos.getOrder())
         console.log('2',uuid)
-        // const paymentLine = this.pos.getOrder().getPaymentlineByUuid(uuid);
-        // console.log('paymentline1',paymentLine)
-        // if (paymentLine.amount < 0) {
-        //     const originalPaymentId = this._findOriginalPaymentId(paymentLine);
-        //     if (!originalPaymentId) {
-        //         this._showTapError(
-        //             _t("You can only refund an order that was paid for with Tap.")
-        //         );
-        //         return false;
-        //     }
-        //     return this._createTapRefund(paymentLine, originalPaymentId);
-        // }
+
         return this._createTapPayment(uuid,price);
     },
     async _createTapPayment(uuid,price) {
-        console.log('12')
         let method_id
         try {
             console.log('this',this)
             console.log('pay',this.pos.session.id)
-            // console.log('payment method',this.payment_method_id.id)
             this.props.paymentLines.forEach(line => {
         if(line.payment_method_id.name === 'Tap'){
            method_id=line.payment_method_id.id
@@ -67,21 +53,15 @@ let price=0;
                 this.pos.session.id,
             ]);
              this.state.datas=data
+             this.state.methods=method_id
             console.log('ddd',data)
             if (!["CREATED"].includes(data.status)) {
                 this._showTapError(_t("Failed to initiate payment: %s", data.status));
                 return false;
             }
-            // if (data.url) {
-                // browser.open(data.url, "_blank");
-                // redirect(data.url.href);
-            // }
-            // const paymentLine = this.getPaymentlineByUuid(uuid);
-            // console.log('tansac',paymentLine)
-            // paymentLine.transaction_id = data.id;
+
             await this.pos.data.synchronizeLocalDataInIndexedDB();
             const { promise, resolve } = Promise.withResolvers();
-            // this.paymentLineResolvers[paymentLine.uuid] = resolve;
             return promise;
         } catch (error) {
             console.log('catch')
@@ -104,11 +84,24 @@ let price=0;
         }
         return error.message;
     },
-     onClickCheck(){
+     async onClickCheck(line){
         console.log('check',this)
         try {
-            this.orm.call("pos.payment.method", "_tap_get_payment", [this.state.datas.id]);
-            // console.log('payyy', pays)
+
+            console.log('payyy', this.state.datas.id)
+            const pay_details=await this.orm.call("pos.payment.method", "tap_get_payment", [this.state.methods,this.state.datas.id],{});
+
+                 console.log('payyys', pay_details)
+            if (pay_details.status === 'CREATED'){
+                console.log('else')
+
+                 this._showTapError('payment pending');
+            }
+            else {
+                console.log('tap')
+                 line.setPaymentStatus('done')
+            }
+
         }  catch (error) {
             console.log('catch')
             this._showTapError(error);
