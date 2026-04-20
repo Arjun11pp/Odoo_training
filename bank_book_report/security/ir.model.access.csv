@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+bank_report_wizard,bank.user,bank_book_report.model_account_move_report_wizard,base.group_user,1,1,1,1

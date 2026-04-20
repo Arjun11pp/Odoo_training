@@ -9,18 +9,31 @@ patch(OrderPaymentValidation.prototype, {
         this.dialog = this.pos.env.services.dialog;
     },
     async validateOrder() {
+        /**
+         * overriding pos validate button
+         */
+        let is_tap=false
         this.paymentLines.forEach(line => {
-            if(line.payment_method_id.name==='Tap' && line.payment_status!=='done' ){
-                console.log('doneee')
-                return this.dialog.add(AlertDialog, {
-                title: _t("PAYMENT Error"),
-                body: _t(
-                    " Tap payment is not validated." ),
-            });
-
+            if (line.payment_method_id.name === 'Tap') {
+                is_tap = true
             }
         })
-
-
+        this.paymentLines.forEach(line => {
+            if(line.payment_method_id.name==='Tap' && line.payment_status!=='done' ){
+                return this.dialog.add(AlertDialog, {
+                title: _t("PAYMENT Error"),
+                body: _t(" Tap payment is not validated." ),
+            });
+            }
+            else if (is_tap===true){
+                return this.dialog.add(AlertDialog, {
+                title: _t("PAYMENT Error"),
+                body: _t(" Tap payment is not validated." ),
+            });
+            }
+            else {
+                super.validateOrder(...arguments);
+            }
+        })
     },
 });

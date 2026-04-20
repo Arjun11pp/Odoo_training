@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+     <record id="action_report_bank" model="ir.actions.report">
+        <field name="name">Bank report</field>
+        <field name="model">account.move.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bank_book_report.report_subscription_credit</field>
+        <field name="report_file">bank_book_report.report_subscription_credit</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+   <record id="bank_book_report_wizard" model="ir.actions.act_window">
+        <field name="name">Bank Book Report</field>
+        <field name="res_model">account.move.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="bank_book_report.model_account_move_report_wizard"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <record id="bank_book_report_wizard_form" model="ir.ui.view">
+        <field name="name">account.move.report.wizard.form</field>
+        <field name="model">account.move.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="target_moves" widget="radio"   />
+                    <field name="sort_by" widget="radio" />
+                    <field name="include_initials"/>
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="accounts" widget="many2many_tags"/>
+                    <field name="journal" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button string="Print PDF" name="action_bank_report_button"
+                            type="object" class="btn-primary"/>
+                    <button  string="Print Excel"
+                            type="object" class="btn-primary"/>
+                    <button string="cancel"  special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+   <menuitem id="bank_book_report_menu" name="Bank report"
+                 parent="account.menu_finance" sequence="11" action="bank_book_report.bank_book_report_wizard"/>
+</odoo>

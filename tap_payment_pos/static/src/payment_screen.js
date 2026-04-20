@@ -1,5 +1,3 @@
-/** @odoo-module **/
-
 import { PaymentScreenPaymentLines } from "@point_of_sale/app/screens/payment_screen/payment_lines/payment_lines";
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
@@ -14,38 +12,39 @@ setup(){
     this.state = useState({
         datas: {},
         methods: {},
+        is_clicked: false,
     });
 },
-onClickTest(amount) {
+sendTapPaymentRequest(amount) {
+    /**
+     * Send tap payment request from pos
+     */
     const is_clicked=true
     let price=0;
-    console.log("Clicked Test Button",this);
-    console.log("amount",amount.props.paymentLines);
     amount.props.paymentLines.forEach(line => {
         if(line.payment_method_id.name === 'Tap'){
             price=line.amount;
-            console.log('price',price)
+            if(price<=0){
+         this._showTapError(_t("Payment amount is zero"));
+    }
         }
-        console.log('lines',line.payment_method_id)
     })
     this.sendPaymentRequest(this.pos.selectedOrder.uuid,price)
 
 },
     async sendPaymentRequest(uuid,price) {
-        console.log('1',this.pos.getOrder())
-        console.log('2',uuid)
-
         return this._createTapPayment(uuid,price);
     },
     async _createTapPayment(uuid,price) {
+        /**
+         * function calls tap payment request function from pos.payment.method model
+         */
         let method_id
         try {
-            console.log('this',this)
-            console.log('pay',this.pos.session.id)
             this.props.paymentLines.forEach(line => {
         if(line.payment_method_id.name === 'Tap'){
            method_id=line.payment_method_id.id
-            console.log('price',method_id,uuid,this.pos.session.id)
+
         }})
             const data = await this.pos.data.call("pos.payment.method", "tap_create_payment", [
                 method_id,
@@ -54,7 +53,6 @@ onClickTest(amount) {
             ]);
              this.state.datas=data
              this.state.methods=method_id
-            console.log('ddd',data)
             if (!["CREATED"].includes(data.status)) {
                 this._showTapError(_t("Failed to initiate payment: %s", data.status));
                 return false;
@@ -62,20 +60,27 @@ onClickTest(amount) {
 
             await this.pos.data.synchronizeLocalDataInIndexedDB();
             const { promise, resolve } = Promise.withResolvers();
+            this.state.is_clicked=true
             return promise;
+
         } catch (error) {
-            console.log('catch')
             this._showTapError(error);
             return false;
         }
     },
     _showTapError(error) {
+        /**
+         * throws error upon call
+         */
         this.env.services.dialog.add(AlertDialog, {
             title: _t("Tap Error"),
             body: this._extractErrorMessage(error),
         });
     },
      _extractErrorMessage(error) {
+         /**
+          * function extracts the error message
+          */
         if (typeof error === "string") {
             return error;
         }
@@ -84,29 +89,22 @@ onClickTest(amount) {
         }
         return error.message;
     },
-     async onClickCheck(line){
-        console.log('check',this)
+      async checkPaymentStatus(line){
+          /**
+           * function that calls tap_get_payment function to get payment details
+           */
         try {
-
-            console.log('payyy', this.state.datas.id)
-            const pay_details=await this.orm.call("pos.payment.method", "tap_get_payment", [this.state.methods,this.state.datas.id],{});
-
-                 console.log('payyys', pay_details)
+            const pay_details= await this.orm.call("pos.payment.method", "tap_get_payment", [this.state.methods,this.state.datas.id],{});
             if (pay_details.status === 'CREATED'){
-                console.log('else')
-
                  this._showTapError('payment pending');
             }
             else {
-                console.log('tap')
                  line.setPaymentStatus('done')
             }
 
         }  catch (error) {
-            console.log('catch')
             this._showTapError(error);
             return false;
         }
-
     }
 });

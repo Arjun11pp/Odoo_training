@@ -6,14 +6,17 @@ from dateutil.utils import today
 from odoo.tools import hash_sign
 
 class PosPaymentMethod(models.Model):
+    """ Inherits from PosPaymentMethod model """
     _inherit = "pos.payment.method"
 
     def _get_payment_terminal_selection(self):
+        """ payment terminal selection """
         return super()._get_payment_terminal_selection() + [("tap", "Tap")]
     tap_payment_provider_id = fields.Many2one("payment.provider", domain=[("code", "=", "tap")])
 
     @api.constrains('tap_payment_provider_id')
     def _check_tap_payment_provider_id(self):
+        """ function to check tap payment provider api key is available """
         for payment_method in self:
             if not payment_method.tap_payment_provider_id:
                 continue
@@ -23,7 +26,8 @@ class PosPaymentMethod(models.Model):
                     payment_method.tap_payment_provider_id.name
                 ))
 
-    def tap_create_payment(self, amount: float, payment_uuid: str, pos_session_id: int):    
+    def tap_create_payment(self, amount: float, payment_uuid: str, pos_session_id: int):
+        """ create payment request on tap payment provider """
         self.ensure_one()
         currency = self.journal_id.currency_id or self.company_id.currency_id
         formatted_amount = f"{amount:.3f}"
@@ -78,30 +82,14 @@ class PosPaymentMethod(models.Model):
             },
             "statement_descriptor": "test"
         }
-        print('self',self.tap_payment_provider_id)
         return self.tap_payment_provider_id._send_api_request("POST", "/invoices", json=payment_request)
 
     def tap_cancel_payment(self, payment_id: str):
+        """ function to cancel tap payment """
         self.ensure_one()
         return self.tap_payment_provider_id._send_api_request("DELETE", f"/invoices/{payment_id}")
 
     def tap_get_payment(self, payment_id: str):
-        print('self',self)
+        """ function to get tap payment details """
         # self.ensure_one()
-        print('payment',self.tap_payment_provider_id)
-        for data in  self.tap_payment_provider_id._send_api_request("GET", f"/invoices/{payment_id}"):
-            print(data)
         return self.tap_payment_provider_id._send_api_request("GET", f"/invoices/{payment_id}")
-
-    # def tap_create_refund(self, original_payment_id: str, amount: float, payment_uuid: str, pos_session_id: int):
-    #     print('create refund')
-    #     self.ensure_one()
-    #     currency = self.journal_id.currency_id or self.company_id.currency_id
-    #     payment_request = {
-    #         "amount": {
-    #             "currency": currency.name,
-    #             "value": f"{amount:.{currency.decimal_places}f}"
-    #         },
-    #         "description": f"pos_session_id={pos_session_id},payment_uuid={payment_uuid}",
-    #     }
-    #     return self.tap_payment_provider_id._send_api_request("POST", f"/payments/{original_payment_id}/refunds", json=payment_request)
