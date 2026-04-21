@@ -16,7 +16,12 @@
         'report/bank_report.xml',
         'report/bank_report_action.xml',
     ],
+'assets': {
 
+        'web.assets_backend': [
+            'bank_book_report/static/src/js/action_manager.js',
+        ],
     'author': 'Cybrosys.',
     'license': 'LGPL-3',
+}
 }

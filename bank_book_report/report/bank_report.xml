@@ -2,16 +2,71 @@
 <odoo>
    <template id="report_bank">
        <t t-call="web.html_container">
-
                <t t-call="web.external_layout">
                    <div class="page">
                        <div class="oe_structure"/>
-                       <h2>Bank Book Report</h2>
-                       <br></br>
-                       <t t-foreach="data" t-as="o">
-                       <p>
-                         Name : 
-                       </p></t>
+
+                       <h2>
+                           <t t-foreach="data" t-as="o">
+                           <span t-esc="o.get('company_name')"/></t>
+                           : Bank Book Report</h2>
+                        <table class="table table-bordered " >
+                            <thead>
+                                <tr rowspan="4">
+                                    <th>journals : </th>
+                                    <th>Target Moves</th>
+                                    <th>Sorted by</th>
+
+                                    <th>Date from</th>
+                                    <th>Date to</th>
+                                </tr></thead>
+                           <t t-foreach="data" t-as="o">
+                           <tr>
+                               <td>
+                                   <span t-esc="o.get('journal')"/>
+                               </td><td>
+                                   <span t-esc="o.get('target_moves')"/>
+                               </td><td>
+                                   <span t-esc="o.get('sort_by')"/>
+                               </td><td>
+                                   <span t-esc="o.get('start_date')"/>
+                               </td><td>
+                                   <span t-esc="o.get('end_date')"/>
+                               </td>
+                           </tr></t>
+                       </table>
+               <table class="table table-bordered custom-black-table" style="table-layout:auto; border-collapse:collapse;" border="1" >
+
+                            <thead>
+                                <tr>
+                                    <th>Date
+                                    </th><th>JRNL
+                                    </th><th>Partner
+                                    </th><th>Move
+                                    </th><th>Entry Label
+                                    </th><th>Debit
+                                    </th><th>Credit
+                                    </th><th>Balance
+                                    </th>
+                                </tr>
+                            </thead>
+                   <t t-foreach="docs" t-as="o">
+                       <tr>
+                           <td><span t-esc="o.get('create_date')"/> </td>
+                           <td><span t-esc="o.get('journal')"/> </td>
+                           <td><span t-esc="o.get('customer')"/> </td>
+                           <td><span t-esc="o.get('move_name')"/> </td>
+                           <td><span t-esc="o.get('name')"/> </td>
+                           <td><span t-esc="o.get('debit')"/> </td>
+                           <td><span t-esc="o.get('credit')"/> </td>
+                           <td><span t-esc="o.get('balance')"/> </td>
+                       </tr>
+                   </t>
+               </table>
+
+
+
+
                    </div>
                </t>
            </t>

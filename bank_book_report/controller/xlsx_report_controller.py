@@ -7,9 +7,9 @@ from odoo.tools import html_escape
 
 class XLSXReportController(http.Controller):
     """Xlsx Report controller"""
-    @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'],
-                csrf=False)
-    def get_report_xlsx(self, model, options, output_format, report_name):
+    @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'], csrf=False)
+    def get_bank_report_xlsx(self, model, options, output_format, report_name):
+        print('1234')
         """xlsx report"""
         report_obj = request.env[model].with_user(request.session.uid)
 
@@ -23,10 +23,9 @@ class XLSXReportController(http.Controller):
                         ('Content-Disposition', content_disposition(report_name + '.xlsx'))
                     ]
                 )
-                if model == 'credit.report.wizard':
-                    report_obj.get_xlsx_report2(options, response)
-                else:
-                    report_obj.get_xlsx_report(options, response)
+
+
+                report_obj.get_bank_xlsx_report(options, response)
             response.set_cookie('fileToken', token)
             return response
         except Exception as e:
