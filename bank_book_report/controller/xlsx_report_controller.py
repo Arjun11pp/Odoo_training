@@ -23,8 +23,6 @@ class XLSXReportController(http.Controller):
                         ('Content-Disposition', content_disposition(report_name + '.xlsx'))
                     ]
                 )
-
-
                 report_obj.get_bank_xlsx_report(options, response)
             response.set_cookie('fileToken', token)
             return response

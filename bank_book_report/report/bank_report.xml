@@ -5,68 +5,69 @@
                <t t-call="web.external_layout">
                    <div class="page">
                        <div class="oe_structure"/>
-
-                       <h2>
+                           <h2 style="margin-left:26px;">
                            <t t-foreach="data" t-as="o">
                            <span t-esc="o.get('company_name')"/></t>
-                           : Bank Book Report</h2>
-                        <table class="table table-bordered " >
+                           : Bank Book Report</h2><br/><br/>
+                        <table class="table  table-borderless " style="text-align: center; border-spacing: 4pt; width: 900px;" >
                             <thead>
-                                <tr rowspan="4">
-                                    <th>journals : </th>
+                                <tr>
+                                    <th>Journals  </th>
                                     <th>Target Moves</th>
                                     <th>Sorted by</th>
-
                                     <th>Date from</th>
                                     <th>Date to</th>
                                 </tr></thead>
                            <t t-foreach="data" t-as="o">
                            <tr>
                                <td>
-                                   <span t-esc="o.get('journal')"/>
-                               </td><td>
-                                   <span t-esc="o.get('target_moves')"/>
-                               </td><td>
-                                   <span t-esc="o.get('sort_by')"/>
-                               </td><td>
-                                   <span t-esc="o.get('start_date')"/>
-                               </td><td>
-                                   <span t-esc="o.get('end_date')"/>
-                               </td>
+                                   <t t-foreach="o.get('journal')" t-as="name">
+                                        <span t-esc="name"/>
+                                       <t t-if="not name_last">, </t></t>
+                               </td><td style="width: 20%">
+                                   <span t-esc="o.get('target_moves').capitalize()"/>
+                               </td><td> <span t-esc="o.get('sort_by').capitalize()"/>
+                               </td><td> <span t-esc="o.get('start_date')"/>
+                               </td><td> <span t-esc="o.get('end_date')"/> </td>
                            </tr></t>
-                       </table>
-               <table class="table table-bordered custom-black-table" style="table-layout:auto; border-collapse:collapse;" border="1" >
-
+                       </table><br/><br/>
+               <table class="table table-bordered custom-black-table horizontal-align-middle  table-sm o_main_table"
+                      style=" border-collapse:collapse; margin-left:16px;  margin-right:16px; " border="1" cellspacing="1">
                             <thead>
-                                <tr>
-                                    <th>Date
+                                <tr >
+                                    <th style="padding-right:50px;">Date
                                     </th><th>JRNL
                                     </th><th>Partner
                                     </th><th>Move
                                     </th><th>Entry Label
-                                    </th><th>Debit
-                                    </th><th>Credit
-                                    </th><th>Balance
-                                    </th>
+                                    </th><th style="padding: 10px;">Debit
+                                    </th><th style="padding: 10px;">Credit
+                                    </th><th style="padding: 10px;">Balance</th>
                                 </tr>
                             </thead>
+                   <tr style="height: 10%">
+                                 <t t-foreach="data" t-as="o"><td colspan="5">
+                                    <t t-foreach="o.get('account_names')" t-as="name">
+                                        <span t-esc="name"/>
+                                        <t t-if="not name_last">, </t>
+                                    </t></td>
+                               <td style="padding: 10px;"><span t-esc="o.get('debit_total')"/></td>
+                               <td style="padding: 10px;"><span t-esc="o.get('credit_total')"/></td>
+                               <td style="padding: 10px;"><span t-esc="o.get('balance_total')"/></td>
+                                   </t>  </tr>
                    <t t-foreach="docs" t-as="o">
-                       <tr>
-                           <td><span t-esc="o.get('create_date')"/> </td>
-                           <td><span t-esc="o.get('journal')"/> </td>
-                           <td><span t-esc="o.get('customer')"/> </td>
-                           <td><span t-esc="o.get('move_name')"/> </td>
-                           <td><span t-esc="o.get('name')"/> </td>
-                           <td><span t-esc="o.get('debit')"/> </td>
-                           <td><span t-esc="o.get('credit')"/> </td>
-                           <td><span t-esc="o.get('balance')"/> </td>
+                       <tr style="padding-left: 20px;">
+                           <td style="padding: 4px;"><span t-esc="o.get('create_date')" style="text-align: center;"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('journal')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('customer')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('move_name')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('name')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('debit')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('credit')"/> </td>
+                           <td style="padding: 4px;"><span t-esc="o.get('balance')"/> </td>
                        </tr>
                    </t>
                </table>
-
-
-
-
                    </div>
                </t>
            </t>

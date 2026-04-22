@@ -5,7 +5,7 @@
     'version': '19.0.1',
     'category': 'Accounting',
     'sequence': 2,
-    'summary': " Generates cash book report in both Excel and PDF formats ",
+    'summary': " Generates Bank book report in both Excel and PDF formats ",
     'description': " ",
     'application' : True,
     'installable': True,

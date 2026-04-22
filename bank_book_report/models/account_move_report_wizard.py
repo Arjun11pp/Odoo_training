@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import  fields, models
 import json
 import io
-from odoo.tools import date_utils, json_default
+from odoo.tools import  json_default
 try:
     from odoo.tools.misc import xlsxwriter
 except ImportError:
@@ -22,6 +22,7 @@ class AccountMove(models.TransientModel):
     journal=fields.Many2many("account.journal", string="Journal")
 
     def action_bank_report_button(self):
+        """ function for bank_book_report wizard """
         data = {
             'target_moves': self.target_moves,
             'sort_by': self.sort_by,
@@ -34,6 +35,7 @@ class AccountMove(models.TransientModel):
         return self.env.ref('bank_book_report.action_report_bank_book').report_action(None, data)
 
     def action_print_xlsx(self):
+        """ function for bank_book_report wizard xlsx """
         print('xlsx')
         data = {
             'target_moves': self.target_moves,
@@ -55,25 +57,15 @@ class AccountMove(models.TransientModel):
         }
 
     def get_bank_xlsx_report(self, data, response):
-        print('234')
+        """ function for bank_book_report wizard XLSX template """
         query = """ SELECT aml.create_date, aml.move_name, aml.name, aml.debit, aml.credit, aml.balance, res.name AS customer, aa.name  as account, aj.code  AS journal 
                     FROM account_move_line AS aml LEFT JOIN account_move am ON aml.move_id = am.id LEFT JOIN res_partner res ON aml.partner_id = res.id 
                     LEFT JOIN account_account aa ON aml.account_id = aa.id LEFT JOIN account_journal aj ON aml.journal_id = aj.id WHERE 1 = 1 """
 
         journals = data['journal']
-        account = data['accounts']
-        filters = {}
-        filters['start_date'] = data['start_date']
-        filters['end_date'] = data['end_date']
-
+        data['company_name']=self.env.company.name
         journal_names = self.env['account.journal'].search([('id', '=', journals)]).mapped('code')
-        account_id = self.env['account.account'].search([('id', '=', account)]).mapped('code_store')
-        print('code',account_id)
-        filters['journal'] = journal_names
-        filters['target_moves'] = data['target_moves']
-        filters['sort_by'] = data['sort_by']
         accounts = data['accounts']
-        print('data', data)
         target_moves = data['target_moves']
         sort_by = data['sort_by']
         start_date = data['start_date']
@@ -85,7 +77,6 @@ class AccountMove(models.TransientModel):
             query += " AND aml.account_id IN %s" % (accounts,)
         if start_date and end_date:
             query += "  AND  aml.create_date >= '%s' AND aml.create_date <= '%s' " % (start_date, end_date)
-        # print('123',journals)
         if len(journals) == 1:
             query += "AND aml.journal_id = %s" % journals[0]
         elif journals:
@@ -102,9 +93,6 @@ class AccountMove(models.TransientModel):
         docs = self.env.cr.dictfetchall()
         for doc in docs:
             doc['create_date']=doc['create_date'].date()
-        for d in docs:
-            print(d['create_date'])
-
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet('docs')
@@ -112,33 +100,37 @@ class AccountMove(models.TransientModel):
         sheet.set_column(1, 1, 15)
         sheet.set_column(2, 2, 15)
         sheet.set_column(3, 3, 15)
-        sheet.set_column(4, 4, 15)
-        sheet.set_column(5, 5, 15)
+        sheet.set_column(4, 4, 20)
+        sheet.set_column(5, 5, 30)
         sheet.set_column(6, 6, 15)
         sheet.set_column(7, 7, 15)
+        sheet.set_column(8, 8, 15)
         border = workbook.add_format({'border': 1, 'align': 'left','text_wrap': True})
+        company = workbook.add_format({'border': 1, 'align': 'left','text_wrap': True,'font_size': 9})
         date_format=workbook.add_format({ 'num_format': 'yyyy-mm-dd','border': 1, 'align': 'left'})
-        title = workbook.add_format({'align': 'left', 'bold': True, 'valign': 'top'})
+        title = workbook.add_format({'align': 'left', 'bold': True, 'valign': 'top','border':1})
 
-        head = workbook.add_format(
-            {'bold': True, 'font_size': 30, 'align': 'center', 'valign': 'vcenter','bg_color': '#dddddd'})
-        sheet.write(1, 1, 'Report Date', title)
-        sheet.write(1, 2, fields.Date.today(), date_format)
-        sheet.merge_range('C3:H6', 'Bank Report', head)
+        head = workbook.add_format({'bold': True, 'font_size': 30, 'align': 'center', 'valign': 'vcenter','bg_color': '#dddddd'})
+        sheet.write(3, 1, 'Report Date', title)
+        sheet.write(3, 2, fields.Date.today(), date_format)
+        sheet.write(3, 7, 'Company',border)
+        sheet.write(3, 8, data['company_name'],company)
+        sheet.merge_range('B5:I8', 'Bank Report', head)
 
-        if data['journal'] !=False:
-            sheet.write(10, 1,'journals:' , title)
+        if data['journal']:
+            sheet.write(10, 1,'Journals  :' , title)
             formatted_names = ", ".join(journal_names)
             sheet.write(10, 2,formatted_names )
         sheet.write(12, 1,'Sorted by' , title)
-        sheet.write(13, 1, data['sort_by'] )
+        sheet.write(13, 1, data['sort_by'].capitalize() )
         sheet.write(12, 3, 'Target Moves', title)
-        sheet.write(13, 3   , data['target_moves'] )
-        if data['start_date'] !=False and data['end_date'] != False:
-            sheet.write(11, 6, 'Start Date', title)
-            sheet.write(12, 6, data['start_date'])
-            sheet.write(11, 8, 'End date', title)
-            sheet.write(12, 8, data['end_date'])
+        sheet.write(13, 3   , data['target_moves'].capitalize() )
+        if data['start_date'] !=False :
+            sheet.write(12, 6, 'Start Date', title)
+            sheet.write(13, 6, data['start_date'])
+        if  data['end_date'] != False:
+            sheet.write(12, 8, 'End date', title)
+            sheet.write(13, 8, data['end_date'])
 
         sheet.merge_range('B18:B19', 'Date', title)
         sheet.merge_range('C18:C19', 'JRNL', title)
@@ -156,7 +148,6 @@ class AccountMove(models.TransientModel):
             col += 1
             sheet.write(row, col, doc['journal'], border)
             col += 1
-            # if len(set(doc['customer'] for doc in docs)) != 1:
             sheet.write(row, col, doc['customer'], border)
             col += 1
             sheet.write(row, col, doc['move_name'], border)
