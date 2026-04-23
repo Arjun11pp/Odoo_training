@@ -14,5 +14,7 @@
         'views/purchase_order_view.xml',
         'views/res_user_view.xml',
         'data/delivery_product.xml'
-    ]
+    ],
+    'license': 'LGPL-3',
+
 }

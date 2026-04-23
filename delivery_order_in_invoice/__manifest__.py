@@ -10,7 +10,7 @@
     ],
     "application": True,
     "installable": True,
-
+    'license': 'LGPL-3',
     'author': 'Cybrosys',
 
 }

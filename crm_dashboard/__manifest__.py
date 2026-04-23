@@ -24,5 +24,5 @@
    ],
 },
     'author': 'Cybrosys',
-
+    'license': 'LGPL-3',
 }

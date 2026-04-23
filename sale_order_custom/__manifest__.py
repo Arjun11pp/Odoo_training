@@ -9,4 +9,6 @@
         'views/sale_order_statewise_view.xml',
             'views/sale_order_custom_view.xml',
 
-        ]}
+        ],
+'license': 'LGPL-3',
+}

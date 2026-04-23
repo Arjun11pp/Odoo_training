@@ -9,7 +9,6 @@ class XLSXReportController(http.Controller):
     """Xlsx Report controller"""
     @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'], csrf=False)
     def get_bank_report_xlsx(self, model, options, output_format, report_name):
-        print('1234')
         """xlsx report"""
         report_obj = request.env[model].with_user(request.session.uid)
 

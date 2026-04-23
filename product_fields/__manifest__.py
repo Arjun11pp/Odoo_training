@@ -11,6 +11,7 @@
         'views/contact_view.xml',
 
 
-    ]
+    ],
+    'license': 'LGPL-3',
 
 }

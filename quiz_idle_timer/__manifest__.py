@@ -17,6 +17,7 @@
             'quiz_idle_timer/static/src/js/timer_reload.js'
         ],
     },
+    'license': 'LGPL-3',
     'author': 'Cybrosys',
 
 }

@@ -3,6 +3,7 @@
 from odoo import  fields, models
 import json
 import io
+from datetime import datetime
 from odoo.tools import  json_default
 try:
     from odoo.tools.misc import xlsxwriter
@@ -11,15 +12,16 @@ except ImportError:
 
 class AccountMove(models.TransientModel):
     _name = "account.move.report.wizard"
+    _description = " Bank Book Report Wizard for generating reports "
     """ model for bank_book_report wizard """
 
     target_moves=fields.Selection([('posted','All Posted Entries '),('all','All Entries')],string="Target Entries",required=True)
     sort_by=fields.Selection([('date','Date'),('journal','Journal & Partner')],string="Sort By",required=True)
     include_initials=fields.Boolean(default=False,string="Include Initial Balance")
-    start_date = fields.Date( string="Start Date")
+    start_date = fields.Date( string="Start Date",)
     end_date = fields.Date(string="End Date")
-    accounts=fields.Many2many("account.account", string="Accounts")
-    journal=fields.Many2many("account.journal", string="Journal")
+    account_ids=fields.Many2many("account.account", string="Accounts")
+    journal_ids=fields.Many2many("account.journal", string="Journal")
 
     def action_bank_report_button(self):
         """ function for bank_book_report wizard """
@@ -29,22 +31,21 @@ class AccountMove(models.TransientModel):
             'include_initials': self.include_initials,
             'start_date': self.start_date,
             'end_date': self.end_date,
-            'accounts': self.accounts.ids,
-            'journal': self.journal.ids,
+            'accounts': self.account_ids.ids,
+            'journal': self.journal_ids.ids,
         }
         return self.env.ref('bank_book_report.action_report_bank_book').report_action(None, data)
 
     def action_print_xlsx(self):
         """ function for bank_book_report wizard xlsx """
-        print('xlsx')
         data = {
             'target_moves': self.target_moves,
             'sort_by': self.sort_by,
             'include_initials': self.include_initials,
             'start_date': self.start_date,
             'end_date': self.end_date,
-            'accounts': self.accounts.ids,
-            'journal': self.journal.ids,
+            'accounts': self.account_ids.ids,
+            'journal': self.journal_ids.ids,
         }
         return {
             'type': 'ir.actions.report',
@@ -66,17 +67,29 @@ class AccountMove(models.TransientModel):
         data['company_name']=self.env.company.name
         journal_names = self.env['account.journal'].search([('id', '=', journals)]).mapped('code')
         accounts = data['accounts']
+        account_names = self.env['account.account'].search([('id', '=',accounts)]).mapped('name')
+        data['account_names'] = account_names
         target_moves = data['target_moves']
         sort_by = data['sort_by']
         start_date = data['start_date']
         end_date = data['end_date']
+        if data['include_initials']:
+            lines = self.env['account.move.line'].search([('account_id', 'in', accounts), ('date', '<', start_date)])
+            initial_debit = sum(lines.mapped('debit'))
+            initial_credit = sum(lines.mapped('credit'))
+            data['initial_balance'] = initial_debit - initial_credit
+
         if len(accounts) == 1:
             query += " AND aml.account_id = %s" % accounts[0]
         elif accounts:
             accounts = tuple(accounts)
             query += " AND aml.account_id IN %s" % (accounts,)
-        if start_date and end_date:
-            query += "  AND  aml.create_date >= '%s' AND aml.create_date <= '%s' " % (start_date, end_date)
+        if start_date != False:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            query += "  AND  aml.create_date >= '%s' " % start_date
+        if end_date != False:
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            query += "  AND  aml.create_date <= '%s' " % end_date
         if len(journals) == 1:
             query += "AND aml.journal_id = %s" % journals[0]
         elif journals:
@@ -93,6 +106,12 @@ class AccountMove(models.TransientModel):
         docs = self.env.cr.dictfetchall()
         for doc in docs:
             doc['create_date']=doc['create_date'].date()
+        debit_total = sum(d['debit'] for d in docs)
+        credit_total = sum(d['credit'] for d in docs)
+        balance_total = sum(d['balance'] for d in docs)
+        data['debit_total'] = debit_total
+        data['credit_total'] = credit_total
+        data['balance_total'] = balance_total
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet('docs')
@@ -120,11 +139,16 @@ class AccountMove(models.TransientModel):
         if data['journal']:
             sheet.write(10, 1,'Journals  :' , title)
             formatted_names = ", ".join(journal_names)
-            sheet.write(10, 2,formatted_names )
+            sheet.write(10, 2, formatted_names)
+        if data['account_names']:
+            formatted_account_names = ", ".join(account_names)
         sheet.write(12, 1,'Sorted by' , title)
         sheet.write(13, 1, data['sort_by'].capitalize() )
         sheet.write(12, 3, 'Target Moves', title)
-        sheet.write(13, 3   , data['target_moves'].capitalize() )
+        sheet.write(13, 3, data['target_moves'].capitalize() )
+        if data['include_initials'] !=False :
+            sheet.write(12, 5, 'Initial balance', title)
+            sheet.write(13, 5, data['initial_balance'],border )
         if data['start_date'] !=False :
             sheet.write(12, 6, 'Start Date', title)
             sheet.write(13, 6, data['start_date'])
@@ -140,8 +164,11 @@ class AccountMove(models.TransientModel):
         sheet.merge_range('G18:G19', 'Debit', title)
         sheet.merge_range('H18:H19', 'Credit', title)
         sheet.merge_range('I18:I19', 'Balance', title)
-
-        row = 19
+        sheet.merge_range('B20:F20', formatted_account_names, title)
+        sheet.write(19, 6, data['debit_total'], border)
+        sheet.write(19, 7, data['credit_total'], border)
+        sheet.write(19, 8, data['balance_total'], border)
+        row = 20
         col = 1
         for doc in docs:
             sheet.write(row, col, doc['create_date'], date_format)

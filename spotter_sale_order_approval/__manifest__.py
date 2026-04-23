@@ -12,5 +12,6 @@
 
         'views/sale_order_view.xml',
 
-    ]
+    ],
+    'license': 'LGPL-3',
 }

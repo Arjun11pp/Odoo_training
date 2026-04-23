@@ -47,6 +47,6 @@
             'recurring_subscription/static/src/js/action_manager.js',
         ],
 
-    }
-
+    },
+    'license': 'LGPL-3',
 }
