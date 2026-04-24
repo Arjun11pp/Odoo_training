@@ -6,14 +6,14 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_schedule_meeting']" position="after">
-
-                     <button class="oe_stat_button" type="object" icon="fa-pencil-square-o"
-                            name="action_get_crm_attachments" >
-                            <field name="attachment_count" widget="statinfo" string="Attachments"/>
-                        </button>
+                <button class="oe_stat_button" type="object" icon="fa-pencil-square-o"
+                        name="action_get_crm_attachments">
+                    <field name="attachment_count" widget="statinfo" string="Attachments"/>
+                </button>
             </xpath>
         </field>
     </record>
+
     <record id="view_crm_lead_select_button" model="ir.ui.view">
         <field name="name">ir.attachment.form.inherit.custom.button</field>
         <field name="model">ir.attachment</field>

@@ -10,13 +10,24 @@ class IrAttachment(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """ links opportunity to the attachment """
         for vals in vals_list:
             if vals.get('res_model') == 'crm.lead':
                 vals['opportunity_id']=vals['res_id']
         return super().create(vals_list)
 
     def write(self, vals):
+        """ links opportunity to the attachment """
         if vals.get('res_model') == 'crm.lead':
             vals['opportunity_id'] = vals['res_id']
         res = super().write(vals)
+        return res
+
+    def unlink(self):
+        """ calls compute attachment method upon deletion """
+        opp_id=self.opportunity_id
+        res = super().unlink()
+        print('unlink',opp_id)
+        if opp_id:
+            opp_id._compute_attachment_count()
         return res

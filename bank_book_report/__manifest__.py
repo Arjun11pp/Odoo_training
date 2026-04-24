@@ -21,7 +21,8 @@
         'web.assets_backend': [
             'bank_book_report/static/src/js/action_manager.js',
         ],
-    'author': 'Cybrosys.',
+
+},
+'author': 'Cybrosys.',
     'license': 'LGPL-3',
-}
 }

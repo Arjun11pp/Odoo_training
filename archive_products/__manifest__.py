@@ -15,6 +15,7 @@
         'views/res_user_view.xml',
         'data/delivery_product.xml'
     ],
+    'author': 'Cybrosys',
     'license': 'LGPL-3',
 
 }
