@@ -27,7 +27,6 @@ class IrAttachment(models.Model):
         """ calls compute attachment method upon deletion """
         opp_id=self.opportunity_id
         res = super().unlink()
-        print('unlink',opp_id)
         if opp_id:
             opp_id._compute_attachment_count()
         return res

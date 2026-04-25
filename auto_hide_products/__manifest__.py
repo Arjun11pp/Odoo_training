@@ -9,9 +9,9 @@
     'description': "Auto Hide Out of Stock Products ",
     'application' : True,
     'installable': True,
-    'depends': ['base'],
+    'depends': ['base','product', 'stock', ],
     'data': [
-        'views/product_template_views.xml',
+        'views/product_product_views.xml',
     ],
 
     'author': 'Cybrosys',
