@@ -10,9 +10,9 @@ class ProductProduct(models.Model):
 
     def _compute_quantities(self):
         print('_compute_quantities')
-        result=super(ProductProduct,self)._compute_quantities()
+        result = super(ProductProduct,self)._compute_quantities()
         for rec in self:
-            if rec.qty_available <= 0 and rec.auto_hide_products:
-                if rec.is_published:
+            if rec.qty_available <= 0 and rec.auto_hide_products and rec.is_published:
                     rec.write({'is_published':False})
+                    # rec.write({'active':False})
         return result
