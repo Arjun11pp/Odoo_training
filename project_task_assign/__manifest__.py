@@ -11,7 +11,8 @@
     'installable': True,
     'depends': ['base','project' ],
     'data': [
-        # 'views/purchase_order_view.xml',
+        'views/res_users_view.xml',
+        'views/project_task_view.xml',
     ],
 
     'author': 'Cybrosys',
