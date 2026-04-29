@@ -11,7 +11,7 @@
     'installable': True,
     'depends': ['crm'],
     'data': [
-       # 'views/crm_lead_view.xml',
+
     ],
 
     'author': 'Cybrosys.',
