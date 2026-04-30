@@ -3,7 +3,7 @@
 {
     'name': "Purchase Order Attachment",
     'version': '19.0.1',
-    'category': 'invoice',
+     'category': 'Supply Chain/Inventory',
     'sequence': 2,
     'summary': " Mandatory Attachment Before Confirming Purchase Order",
     'description': "Mandatory Attachment Before Confirming Purchase Order ",

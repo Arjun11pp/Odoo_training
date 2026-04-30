@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_pos_configuration_form" model="ir.ui.view">
+        <field name="name">pos.config.view.form.inherit.pos.order.types</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pos_pricing_section']" position="after">
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="product_location_toggle"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="product_location_toggle"/>
+                            <div class="text-muted">
+                                Choose the location of the product to show quantity
+                            </div>
+                            <div class="content-group mt16" invisible="product_location_toggle == False">
+                                <field name="product_location"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
