@@ -14,6 +14,7 @@ patch(ProductCard.prototype, {
         productTemplate.product_variant_ids.forEach(line => {
             // if (this.pos.session.product_location in line.stock_quant_ids)
             totalQty += line.qty_available || 0;
+            // console.log('quant',line.stock_quant_ids)
         })
 
         return totalQty;

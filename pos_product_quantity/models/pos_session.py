@@ -16,3 +16,4 @@ class PosSession(models.Model):
         res += ['product_location_id']
         print('res1234', res)
         return res
+    
