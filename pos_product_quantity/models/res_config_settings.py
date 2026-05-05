@@ -7,16 +7,14 @@ class ResConfigSettings(models.TransientModel):
     _description = "Inherits res config Settings"
 
     product_location_toggle = fields.Boolean(string='Choose location ',config_parameter='pos_product_quantity.product_location_toggle')
-    pos_config_location_id = fields.Many2one('pos.session')
-    product_location_id = fields.Many2one('stock.location',string='Choose Location',readonly=False,config_parameter='pos_product_quantity.product_location_id',related='pos_config_location_id.product_location_id',store=True)
-    # pos_config_location_id = fields.Many2one('pos.session')
-    # product_location_id = fields.Many2one('stock.location',string='Choose Location',readonly=False,config_parameter='pos_product_quantity.product_location_id',related='pos_config_location_id.product_location_id',store=True)
+    product_location_id = fields.Many2one('stock.location',string='Choose Location',readonly=False,config_parameter='pos_product_quantity.product_location_id')
 
+    @api.onchange('product_location_id')
+    def _onchange_product_location_id(self):
+        """ passing selected location from configuration settings"""
+        for order in self:
+            products = self.env['product.product'].search([])
+            product_tmpl = self.env['product.template'].search([])
+            products.write({'selected_stock_location_id': order.product_location_id.id})
+            product_tmpl.write({'selected_stock_location_id': order.product_location_id.id})
 
-    @api.model
-    def _load_pos_data_fields(self, config_id):
-        """ load data fields into POS """
-        data = super()._load_pos_data_fields(config_id)
-        data += ['product_location_id']
-        print('data1', data)
-        return data
