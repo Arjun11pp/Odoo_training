@@ -13,5 +13,5 @@ class ProductTemplate(models.Model):
         """ load data into POS """
         data = super()._load_pos_data_fields(config_id)
         data .append('qty_location')
-        print('data111', data)
+        data .append('selected_stock_location_id')
         return data

@@ -15,6 +15,7 @@ class ResConfigSettings(models.TransientModel):
         for order in self:
             products = self.env['product.product'].search([])
             product_tmpl = self.env['product.template'].search([])
-            products.write({'selected_stock_location_id': order.product_location_id.id})
-            product_tmpl.write({'selected_stock_location_id': order.product_location_id.id})
+            if order.product_location_toggle:
+                products.write({'selected_stock_location_id': order.product_location_id.id})
+                product_tmpl.write({'selected_stock_location_id': order.product_location_id.id})
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos.ProductCard" t-inherit="point_of_sale.ProductInfoPopup" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('section-inventory')]" position="inside">
+
+                    <div>
+
+<!--                   -->
+                    <t t-foreach="state.period" t-as="o" t-key="o">
+                        <t t-esc="o"/> : <separator/>
+                    </t><t t-esc="state.final_qty"/>
+                </div>
+        </xpath>
+    </t>
+</templates>

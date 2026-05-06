@@ -16,7 +16,9 @@
     "assets": {
         'point_of_sale._assets_pos': [
             'pos_product_quantity/static/src/js/product_card.js',
+            'pos_product_quantity/static/src/js/product_info.js',
             'pos_product_quantity/static/src/xml/product_card.xml',
+            'pos_product_quantity/static/src/xml/warehouse_locations.xml',
         ],
     },
 
