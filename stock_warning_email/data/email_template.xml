@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+   <data>
+       <record id="inventory_alert_email_template" model="mail.template">
+           <field name="name">Alert Email</field>
+           <field name="model_id" ref="stock_warning_email.model_inventory_warning"/>
+<!--           <field name="subject">Product availability alert</field>-->
+<!--           <field name="email_to">{{ object.manager_id.email}}</field>-->
+           <field name="description"> The product quantity alert</field>
+           <field name="body_html" type="html">
+               <div style="margin: 10px; padding: 10px;">
+                   <p>
+                       Hello,<span style="font-weight: bold;" t-out="object"/>
+                       <br/>
+                       <br/>
+                       The product quantity is below the threshold quantity
+                       <br/>
+                       <br/>
+                       <br/>
+                       <br/>Thank You
+                       <br/>
+                   </p>
+               </div>
+           </field>
+       </record>
+   </data>
+</odoo>

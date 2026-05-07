@@ -10,41 +10,28 @@ patch(ProductInfoPopup.prototype, {
         this.state = useState({
             data: {},
             final_qty:0,
-            period:{},
+            location:{},
         });
         this.showLocation()
     },
     async showLocation() {
-        console.log('this',this)
-        // console.log('wh',this.props.info.productInfo.warehouses[0].id)
-        let wh =this.props.info.productInfo.warehouses[0].id
         let tmpl_ids =[]
         this.props.productTemplate.product_variant_ids.forEach(line => {
             tmpl_ids.push(line.id) });
-        console.log('tmpl_ids',tmpl_ids)
-        this.state.data =  await this.orm.searchRead("stock.location",
-            [["warehouse_id", "=", wh]],['id',"complete_name"]
-            );
         let qqq =  await this.orm.searchRead("stock.quant",
-            [["location_id", "=", this.props.productTemplate.selected_stock_location_id],['product_id','in',tmpl_ids    ]]
-            );
-        console.log('qqq',qqq)
-        console.log('locs',this.state.data[0],typeof this.state.period)
+            [["location_id", "=", this.props.productTemplate.selected_stock_location_id],['product_id','in',tmpl_ids]]);
         let quantity=0
         qqq.forEach(line => {
-            console.log('if_ids', line.id)
-            if (this.state.period[line.display_name])
+            if (this.state.location[line.display_name])
             {
                 quantity+= line.quantity
 
             }else {
                 quantity = line.quantity
             }
-            this.state.period[line.display_name]=quantity
+            this.state.location[line.display_name]=quantity
 
         });
         this.state.final_qty=quantity
-             console.log('123',this.state.period);
-             console.log('444',this.state.final_qty);
     },
 });

@@ -4,9 +4,7 @@
         <xpath expr="//div[hasclass('section-inventory')]" position="inside">
 
                     <div>
-
-<!--                   -->
-                    <t t-foreach="state.period" t-as="o" t-key="o">
+                        <t t-foreach="state.location" t-as="o" t-key="o">
                         <t t-esc="o"/> : <separator/>
                     </t><t t-esc="state.final_qty"/>
                 </div>
