@@ -14,7 +14,6 @@
         'data/email_template.xml',
         'security/res_groups.xml',
         'security/ir.model.access.csv',
-
         'views/inventory_threshold_list.xml',
         'views/stock_warehouse_views.xml',
     ],

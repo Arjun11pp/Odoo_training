@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
-from email.policy import default
 
-from odoo import api, fields, models
+from odoo import  fields, models
 
 class InventoryWarning(models.Model):
+    """Inventory warning model created to set threshold limit to products ,
+     So it sends warning email to the warehouse manager """
     _name = 'inventory.warning'
     _description = 'Inventory Warning'
 
     product_id = fields.Many2one('product.product',string='Select Product')
     quantity = fields.Float(string='Quantity')
     warehouse_id = fields.Many2one('stock.warehouse',string='Warehouse')
-    # manager_id=fields.Many2one('res.users',string='Manager',
-    # compute='_default_res_users')
-
-    # def _default_res_users(self):
-    #     users_obj = self.env['res.users']
-    #     users = []
-    #     for user in users_obj.search([]):
-    #         if user.has_group("stock_warning_email.group_inventory_manager"):
-    #             users.append(user.id)
-    #             print('user', user)
-    #     self.write({'manager_id': users[0]})
-    #     return users
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id)

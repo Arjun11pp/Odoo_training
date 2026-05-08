@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models, api
+from odoo import fields, models
 
 class StockWarehouse(models.Model):
+    """ Inherits stock.warehouse model """
     _inherit = "stock.warehouse"
     _description = "Stock Warehouse"
 

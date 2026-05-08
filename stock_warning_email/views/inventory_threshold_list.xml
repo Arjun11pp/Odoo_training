@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-     <record id="select_product_details" model="ir.actions.act_window">
+    <record id="select_product_details" model="ir.actions.act_window">
         <field name="name">Inventory warning</field>
         <field name="res_model">inventory.warning</field>
         <field name="view_mode">list</field>
-  <field name="target">current</field>
-<!--          <field name="view_id" ref="view_product_details"/>-->
-<!--         <field name="binding_view_types">list</field>-->
+        <field name="target">current</field>
     </record>
     <record id="view_product_details" model="ir.ui.view">
         <field name="name">inventory.warning.list</field>
         <field name="model">inventory.warning</field>
         <field name="arch" type="xml">
-          <list editable="bottom">
+            <list editable="bottom">
                 <field name="product_id"/>
                 <field name="quantity"/>
                 <field name="warehouse_id"/>
-
             </list>
         </field>
     </record>
-        <menuitem id="inventory_select_warning_details" name="Inventory warning"
+    <menuitem id="inventory_select_warning_details" name="Inventory warning"
               parent="stock.menu_warehouse_config" sequence="11" action="stock_warning_email.select_product_details"/>
 
 </odoo>

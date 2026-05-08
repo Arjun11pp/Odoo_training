@@ -5,7 +5,6 @@
         <field name="name">Manager</field>
              <field name="privilege_id" ref="stock.res_groups_privilege_inventory"/>
         <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
-<!--        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>-->
     </record>
 
     </data>
